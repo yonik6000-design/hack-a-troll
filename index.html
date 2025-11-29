@@ -42,6 +42,8 @@
         0 20px 50px rgba(0, 0, 0, 0.9),
         0 0 24px rgba(56, 189, 248, 0.35);
       border: 1px solid rgba(15, 23, 42, 0.9);
+      position: relative;
+      z-index: 1;
     }
 
     .title {
@@ -469,9 +471,119 @@
       50% { transform: scale(1.15); }
       100% { transform: scale(1); }
     }
+
+    /* מסך כניסה (Splash / Login) */
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(circle at bottom, rgba(34, 197, 94, 0.18), transparent 55%),
+        #020617;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .intro-panel {
+      width: 90%;
+      max-width: 360px;
+      border-radius: 24px;
+      padding: 20px 16px 18px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.95),
+        0 0 28px rgba(52, 211, 153, 0.5);
+      text-align: center;
+    }
+
+    .intro-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      color: #22f7b5;
+      text-shadow:
+        0 0 10px rgba(34, 247, 181, 0.9),
+        0 0 22px rgba(56, 189, 248, 0.9);
+      margin-bottom: 4px;
+    }
+
+    .intro-subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 14px;
+    }
+
+    .intro-icons {
+      font-size: 30px;
+      margin-bottom: 12px;
+      text-shadow:
+        0 0 10px rgba(248, 250, 252, 0.4);
+    }
+
+    .intro-text {
+      font-size: 11px;
+      color: #d1d5db;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .intro-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      background: radial-gradient(circle at top, #facc15, #eab308, #a855f7);
+      color: #020617;
+      box-shadow:
+        0 10px 26px rgba(250, 204, 21, 0.85),
+        0 0 20px rgba(248, 250, 252, 0.7);
+      text-transform: uppercase;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      margin-bottom: 6px;
+      width: 100%;
+    }
+
+    .intro-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 32px rgba(250, 204, 21, 0.95),
+        0 0 24px rgba(248, 250, 252, 0.8);
+    }
+
+    .intro-note {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .intro-note b {
+      color: #e5e7eb;
+    }
   </style>
 </head>
 <body>
+  <!-- מסך כניסה / Splash -->
+  <div id="introOverlay" class="intro-overlay">
+    <div class="intro-panel">
+      <div class="intro-title">HACK A TROLL</div>
+      <div class="intro-subtitle">גרסת טרולים אינסופית · Inspired by NY</div>
+      <div class="intro-icons">😈 😇 💚</div>
+      <div class="intro-text">
+        חסום את הטרולים הרעים, היזהר מהטובים, אסוף לבבות,  
+        וצבור שיאים לכל שחקן ורמת קושי.  
+        במסך הבא תבחר שם שחקן ותתחיל.
+      </div>
+      <button id="introStartBtn" class="intro-btn">היכנס למשחק</button>
+      <div class="intro-note">
+        טיפ: <b>תן שם אחר לכל שחקן</b> (יוני, אחיין, חברים) ותראו מי שובר את מי.
+      </div>
+    </div>
+  </div>
+
   <div class="game">
     <div class="title">HACK A TROLL</div>
     <div class="subtitle">
@@ -555,7 +667,7 @@
     const MAX_LIVES = 3;
     const EXTRA_LIFE_CAP = MAX_LIVES + 2;
     const HS_KEY   = "hack_a_troll_best_scores_v2";
-    const RUNS_KEY = "hack_a_troll_runs_v2"; // v2 – כולל שחקנים
+    const RUNS_KEY = "hack_a_troll_runs_v2";
     const ACH_KEY  = "hack_a_troll_achievements_v1";
     const PLAYERS_KEY = "hack_a_troll_players_v1";
     const MAX_RUNS_STORED = 50;
@@ -575,23 +687,24 @@
       { id: "no_heart_50",   name: "Iron Will",         desc: "הגעת ל־50 נק' בריצה בלי לקחת שום לב." }
     ];
 
-    const boardEl       = document.getElementById("board");
-    const scoreEl       = document.getElementById("score");
-    const livesEl       = document.getElementById("lives");
-    const levelEl       = document.getElementById("level");
-    const bestEl        = document.getElementById("best");
-    const comboEl       = document.getElementById("combo");
-    const messageEl     = document.getElementById("message");
-    const startBtn      = document.getElementById("startBtn");
-    const shareBtn      = document.getElementById("shareBtn");
-    const diffSelect    = document.getElementById("difficultySelect");
-    const resetBtn      = document.getElementById("resetBtn");
-    const runsListEl    = document.getElementById("runsList");
-    const achListEl     = document.getElementById("achievementsList");
-    const playerNameEl  = document.getElementById("playerName");
-    const playerSelectEl= document.getElementById("playerSelect");
+    const boardEl        = document.getElementById("board");
+    const scoreEl        = document.getElementById("score");
+    const livesEl        = document.getElementById("lives");
+    const levelEl        = document.getElementById("level");
+    const bestEl         = document.getElementById("best");
+    const comboEl        = document.getElementById("combo");
+    const messageEl      = document.getElementById("message");
+    const startBtn       = document.getElementById("startBtn");
+    const shareBtn       = document.getElementById("shareBtn");
+    const diffSelect     = document.getElementById("difficultySelect");
+    const resetBtn       = document.getElementById("resetBtn");
+    const runsListEl     = document.getElementById("runsList");
+    const achListEl      = document.getElementById("achievementsList");
+    const playerNameEl   = document.getElementById("playerName");
+    const playerSelectEl = document.getElementById("playerSelect");
+    const introOverlayEl = document.getElementById("introOverlay");
+    const introStartBtn  = document.getElementById("introStartBtn");
 
-    // sounds
     const sndHitBad   = document.getElementById("soundHitBad");
     const sndHitGood  = document.getElementById("soundHitGood");
     const sndMiss     = document.getElementById("soundMiss");
@@ -1065,7 +1178,6 @@
         return false;
       }
       currentPlayer = normalized;
-      // הוסף לרשימת השחקנים אם חדש
       if (!players.includes(currentPlayer)) {
         players.push(currentPlayer);
         savePlayers();
@@ -1153,9 +1265,7 @@
             url: GAME_URL
           });
           setMessage("התוצאה שותפה.", "good");
-        } catch (_) {
-          // אם המשתמש ביטל – נתעלם
-        }
+        } catch (_) {}
       } else if (navigator.clipboard && navigator.clipboard.writeText) {
         try {
           await navigator.clipboard.writeText(text);
@@ -1168,8 +1278,8 @@
       }
     }
 
+    // אירועים
     startBtn.addEventListener("click", startGame);
-
     diffSelect.addEventListener("change", () => {
       if (gameRunning) return;
       currentDifficulty = diffSelect.value;
@@ -1178,7 +1288,6 @@
       renderRuns();
       setMessage(`מציג שיא וריצות לשחקן "${currentPlayer || "?"}" בקושי: ${labelDifficulty(currentDifficulty)}.`, "neutral");
     });
-
     resetBtn.addEventListener("click", resetAllData);
     shareBtn.addEventListener("click", shareLastRun);
 
@@ -1189,6 +1298,14 @@
       currentPlayer = selected;
       renderRuns();
       setMessage(`שחקן נוכחי: ${currentPlayer}.`, "neutral");
+    });
+
+    introStartBtn.addEventListener("click", () => {
+      introOverlayEl.style.opacity = "0";
+      introOverlayEl.style.transition = "opacity 0.4s ease";
+      setTimeout(() => {
+        introOverlayEl.style.display = "none";
+      }, 400);
     });
 
     // init
