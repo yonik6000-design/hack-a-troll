@@ -63,6 +63,47 @@
       margin-bottom: 10px;
     }
 
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+
+    .player-label {
+      color: #9ca3af;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .player-input {
+      flex: 1;
+      min-width: 0;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 4px 8px;
+      font-size: 11px;
+      outline: none;
+    }
+
+    .player-input::placeholder {
+      color: #6b7280;
+    }
+
+    .player-select {
+      max-width: 120px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 4px 6px;
+      font-size: 11px;
+      outline: none;
+    }
+
     .top-row {
       display: flex;
       justify-content: space-between;
@@ -155,14 +196,15 @@
     .controls {
       display: flex;
       justify-content: center;
+      gap: 6px;
       margin-bottom: 8px;
     }
 
     button.main-btn {
       border-radius: 999px;
       border: none;
-      padding: 7px 20px;
-      font-size: 13px;
+      padding: 7px 16px;
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
       background: radial-gradient(circle at top, #facc15, #eab308, #a855f7);
@@ -172,6 +214,7 @@
         0 0 14px rgba(248, 250, 252, 0.5);
       text-transform: uppercase;
       transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+      white-space: nowrap;
     }
 
     button.main-btn:hover:not(:disabled) {
@@ -185,6 +228,27 @@
       opacity: 0.55;
       cursor: not-allowed;
       box-shadow: none;
+    }
+
+    button.secondary-btn {
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 7px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button.secondary-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    button.secondary-btn:not(:disabled):hover {
+      background: #111827;
     }
 
     .board {
@@ -411,7 +475,15 @@
   <div class="game">
     <div class="title">HACK A TROLL</div>
     <div class="subtitle">
-      מצב אינסופי · 😈 חסום את הרע · 😇 אל תיגע בטוב · 💚 נותן חיים · קומבואים, שיאים והישגים לכל רמה
+      מצב אינסופי · שמות שחקנים · שיאים לפי שחקן וקושי · כפתור שיתוף תוצאה
+    </div>
+
+    <div class="player-row">
+      <span class="player-label">שחקן:</span>
+      <input id="playerName" class="player-input" placeholder="הכנס שם (למשל יוני)" />
+      <select id="playerSelect" class="player-select">
+        <option value="">שחקן קיים…</option>
+      </select>
     </div>
 
     <div class="top-row">
@@ -423,7 +495,7 @@
           <option value="hard">קשה</option>
         </select>
       </div>
-      <button id="resetBtn" class="reset-btn">איפוס שיאים וריצות</button>
+      <button id="resetBtn" class="reset-btn">איפוס הכל</button>
     </div>
 
     <div class="hud">
@@ -451,19 +523,20 @@
 
     <div class="controls">
       <button id="startBtn" class="main-btn">התחל משחק</button>
+      <button id="shareBtn" class="secondary-btn" disabled>שתף תוצאה</button>
     </div>
 
     <div class="board" id="board"></div>
 
     <div class="message" id="message"></div>
     <div class="hint">
-      המשחק נמשך עד שייגמרו החיים.  
+      כל שיא וריצות נשמרים לפי <b>שחקן + רמת קושי</b>.  
       😈 – לחץ לקבל נקודה (קומבו עולה). אם תפספס → מאבד חיים והקומבו מתאפס.  
       😇 – אם תלחץ → מאבד חיים ומאפס קומבו.  
       💚 – אם תלחץ → מקבל חיים (עד תקרה מוגבלת).
     </div>
 
-    <div class="runs-title">ריצות אחרונות (לפי רמת הקושי הנוכחית):</div>
+    <div class="runs-title">ריצות אחרונות (שחקן ורמת קושי נוכחיים):</div>
     <div id="runsList" class="runs-list"></div>
 
     <div class="achievements-title">הישגים שנפתחו:</div>
@@ -480,11 +553,12 @@
   <script>
     const NUM_HOLES = 9;
     const MAX_LIVES = 3;
-    const EXTRA_LIFE_CAP = MAX_LIVES + 2; // עד 5 חיים
+    const EXTRA_LIFE_CAP = MAX_LIVES + 2;
     const HS_KEY   = "hack_a_troll_best_scores_v2";
-    const RUNS_KEY = "hack_a_troll_runs_v1";
+    const RUNS_KEY = "hack_a_troll_runs_v2"; // v2 – כולל שחקנים
     const ACH_KEY  = "hack_a_troll_achievements_v1";
-    const MAX_RUNS_STORED = 10;
+    const PLAYERS_KEY = "hack_a_troll_players_v1";
+    const MAX_RUNS_STORED = 50;
 
     const DIFFICULTY_CONFIG = {
       easy:   { baseSpawn: 650, baseLifetime: 1100, badProb: 0.40, heartProb: 0.10 },
@@ -501,18 +575,21 @@
       { id: "no_heart_50",   name: "Iron Will",         desc: "הגעת ל־50 נק' בריצה בלי לקחת שום לב." }
     ];
 
-    const boardEl    = document.getElementById("board");
-    const scoreEl    = document.getElementById("score");
-    const livesEl    = document.getElementById("lives");
-    const levelEl    = document.getElementById("level");
-    const bestEl     = document.getElementById("best");
-    const comboEl    = document.getElementById("combo");
-    const messageEl  = document.getElementById("message");
-    const startBtn   = document.getElementById("startBtn");
-    const diffSelect = document.getElementById("difficultySelect");
-    const resetBtn   = document.getElementById("resetBtn");
-    const runsListEl = document.getElementById("runsList");
-    const achListEl  = document.getElementById("achievementsList");
+    const boardEl       = document.getElementById("board");
+    const scoreEl       = document.getElementById("score");
+    const livesEl       = document.getElementById("lives");
+    const levelEl       = document.getElementById("level");
+    const bestEl        = document.getElementById("best");
+    const comboEl       = document.getElementById("combo");
+    const messageEl     = document.getElementById("message");
+    const startBtn      = document.getElementById("startBtn");
+    const shareBtn      = document.getElementById("shareBtn");
+    const diffSelect    = document.getElementById("difficultySelect");
+    const resetBtn      = document.getElementById("resetBtn");
+    const runsListEl    = document.getElementById("runsList");
+    const achListEl     = document.getElementById("achievementsList");
+    const playerNameEl  = document.getElementById("playerName");
+    const playerSelectEl= document.getElementById("playerSelect");
 
     // sounds
     const sndHitBad   = document.getElementById("soundHitBad");
@@ -522,7 +599,7 @@
     const sndGameOver = document.getElementById("soundGameOver");
 
     const holes = [];
-    const activeTrolls = {}; // index -> { type: 'bad'|'good'|'heart', timeoutId, hit }
+    const activeTrolls = {};
 
     let score = 0;
     let lives = MAX_LIVES;
@@ -537,6 +614,11 @@
     let runs = [];
     let achievements = {};
     let usedHeartThisRun = false;
+    let players = [];
+    let currentPlayer = "";
+    let lastRun = null;
+
+    const GAME_URL = window.location.href.split("#")[0];
 
     function playSound(soundEl) {
       if (!soundEl) return;
@@ -610,6 +692,17 @@
       });
     }
 
+    function loadPlayers() {
+      try {
+        const stored = localStorage.getItem(PLAYERS_KEY);
+        if (stored) {
+          const arr = JSON.parse(stored);
+          if (Array.isArray(arr)) players = arr;
+        }
+      } catch (_) {}
+      renderPlayersSelect();
+    }
+
     function saveRuns() {
       try {
         localStorage.setItem(RUNS_KEY, JSON.stringify(runs));
@@ -622,10 +715,32 @@
       } catch (_) {}
     }
 
+    function savePlayers() {
+      try {
+        localStorage.setItem(PLAYERS_KEY, JSON.stringify(players));
+      } catch (_) {}
+    }
+
+    function renderPlayersSelect() {
+      playerSelectEl.innerHTML = "<option value=\"\">שחקן קיים…</option>";
+      players.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        playerSelectEl.appendChild(opt);
+      });
+    }
+
     function renderRuns() {
-      const filtered = runs.filter(r => r.difficulty === currentDifficulty);
+      if (!currentPlayer) {
+        runsListEl.innerHTML = "<div class='run-meta'>הכנס שם שחקן והתחל לשחק כדי לראות ריצות.</div>";
+        return;
+      }
+      const filtered = runs.filter(
+        r => r.difficulty === currentDifficulty && r.player === currentPlayer
+      );
       if (!filtered.length) {
-        runsListEl.innerHTML = "<div class='run-meta'>אין ריצות לקושי הזה – שחק פעם אחת.</div>";
+        runsListEl.innerHTML = "<div class='run-meta'>עדיין אין ריצות לשחקן הזה בקושי הזה.</div>";
         return;
       }
 
@@ -636,7 +751,7 @@
 
         const left = document.createElement("div");
         left.className = "run-meta";
-        left.textContent = `#${filtered.length - idx} · ${labelDifficulty(run.difficulty)} · שלב ${run.level}`;
+        left.textContent = `#${filtered.length - idx} · ${labelDifficulty(run.difficulty)} · ${run.player} · שלב ${run.level}`;
 
         const middle = document.createElement("div");
         middle.className = "run-score";
@@ -710,8 +825,11 @@
         score,
         level,
         difficulty: currentDifficulty,
-        time: timeStr
+        time: timeStr,
+        player: currentPlayer || "ללא שם"
       };
+
+      lastRun = run;
 
       runs.unshift(run);
       if (runs.length > MAX_RUNS_STORED) {
@@ -786,8 +904,9 @@
       recordRun();
       startBtn.disabled = false;
       diffSelect.disabled = false;
+      shareBtn.disabled = !lastRun;
       setMessage(
-        `Game Over – ניקוד: ${score} | שיא (${labelDifficulty(currentDifficulty)}): ${bestScores[currentDifficulty] || 0}`,
+        `Game Over – שחקן ${currentPlayer || "ללא שם"} | ניקוד: ${score} | שיא (${labelDifficulty(currentDifficulty)}): ${bestScores[currentDifficulty] || 0}`,
         "bad"
       );
       playSound(sndGameOver);
@@ -934,8 +1053,30 @@
       }
     }
 
+    function normalizePlayerName(raw) {
+      return raw.trim();
+    }
+
+    function ensureCurrentPlayer() {
+      const nameRaw = playerNameEl.value || "";
+      const normalized = normalizePlayerName(nameRaw);
+      if (!normalized) {
+        setMessage("קודם תכתוב שם שחקן למעלה (למשל: יוני).", "bad");
+        return false;
+      }
+      currentPlayer = normalized;
+      // הוסף לרשימת השחקנים אם חדש
+      if (!players.includes(currentPlayer)) {
+        players.push(currentPlayer);
+        savePlayers();
+        renderPlayersSelect();
+      }
+      return true;
+    }
+
     function startGame() {
       if (gameRunning) return;
+      if (!ensureCurrentPlayer()) return;
 
       const diff = diffSelect.value;
       currentDifficulty = diff;
@@ -947,9 +1088,11 @@
       combo = 0;
       maxCombo = 0;
       usedHeartThisRun = false;
+      lastRun = null;
+      shareBtn.disabled = true;
       updateHud();
       clearAllTrolls();
-      setMessage("Go! מצב אינסופי – נסה לשבור את השיא של הקושי הזה.", "good");
+      setMessage(`Go! שחקן ${currentPlayer}, מצב אינסופי – נסה לשבור את השיא שלך בקושי הזה.`, "good");
 
       gameRunning = true;
       startBtn.disabled = true;
@@ -958,28 +1101,71 @@
       const spawnMs = getLevelAdjustedSpawn();
       spawnIntervalId = setInterval(spawnTroll, spawnMs);
       spawnTroll();
+      renderRuns();
     }
 
     function resetAllData() {
-      if (!confirm("לאפס שיאים, ריצות והישגים? הפעולה לא ניתנת לשחזור.")) return;
+      if (!confirm("לאפס שיאים, ריצות, הישגים ושמות שחקנים? הפעולה לא ניתנת לשחזור.")) return;
       bestScores = { easy: 0, medium: 0, hard: 0 };
       runs = [];
       achievements = {};
+      players = [];
+      currentPlayer = "";
+      lastRun = null;
       ACHIEVEMENTS_DEF.forEach(a => achievements[a.id] = false);
       try {
         localStorage.removeItem(HS_KEY);
         localStorage.removeItem(RUNS_KEY);
         localStorage.removeItem(ACH_KEY);
+        localStorage.removeItem(PLAYERS_KEY);
       } catch (_) {}
       score = 0;
       lives = MAX_LIVES;
       level = 1;
       combo = 0;
       maxCombo = 0;
+      playerNameEl.value = "";
+      renderPlayersSelect();
       updateHud();
       renderRuns();
       renderAchievements();
-      setMessage("הכול אופס – אפשר לבנות שיאים חדשים.", "neutral");
+      shareBtn.disabled = true;
+      setMessage("הכול אופס – אפשר להתחיל ליגת שחקנים מאפס.", "neutral");
+    }
+
+    async function shareLastRun() {
+      if (!lastRun) {
+        setMessage("אין עדיין ריצה לשיתוף – סיים משחק אחד קודם.", "bad");
+        return;
+      }
+      const text =
+        `שיחקתי ב-Hack A Troll!\n` +
+        `שחקן: ${lastRun.player}\n` +
+        `קושי: ${labelDifficulty(lastRun.difficulty)}\n` +
+        `ניקוד: ${lastRun.score}, שלב: ${lastRun.level}\n` +
+        `בוא תנסה לשבור אותי: ${GAME_URL}`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Hack A Troll",
+            text,
+            url: GAME_URL
+          });
+          setMessage("התוצאה שותפה.", "good");
+        } catch (_) {
+          // אם המשתמש ביטל – נתעלם
+        }
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          setMessage("הטקסט הועתק ללוח – הדבק בוואטסאפ / טלגרם.", "good");
+        } catch (_) {
+          setMessage("לא הצלחתי להעתיק אוטומטית, תעתיק ידנית מהקונסול.", "bad");
+        }
+      } else {
+        setMessage("הדפדפן לא תומך בשיתוף – תשתף ידנית עם הקישור.", "bad");
+      }
     }
 
     startBtn.addEventListener("click", startGame);
@@ -990,20 +1176,32 @@
       currentConfig = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.medium;
       updateHud();
       renderRuns();
-      setMessage(`מציג שיא וריצות לקושי: ${labelDifficulty(currentDifficulty)}.`, "neutral");
+      setMessage(`מציג שיא וריצות לשחקן "${currentPlayer || "?"}" בקושי: ${labelDifficulty(currentDifficulty)}.`, "neutral");
     });
 
     resetBtn.addEventListener("click", resetAllData);
+    shareBtn.addEventListener("click", shareLastRun);
+
+    playerSelectEl.addEventListener("change", () => {
+      const selected = playerSelectEl.value;
+      if (!selected) return;
+      playerNameEl.value = selected;
+      currentPlayer = selected;
+      renderRuns();
+      setMessage(`שחקן נוכחי: ${currentPlayer}.`, "neutral");
+    });
 
     // init
     initBoard();
     loadBestScores();
     loadRuns();
     loadAchievements();
+    loadPlayers();
     renderRuns();
     renderAchievements();
     updateHud();
-    setMessage("בחר קושי, לחץ \"התחל משחק\" – וצבור קומבואים, שיאים והישגים.", "neutral");
+    shareBtn.disabled = true;
+    setMessage("בחר שם שחקן, בחר קושי, לחץ \"התחל משחק\" – ואז שתף את התוצאה לחברים.", "neutral");
 
     // PWA – Service Worker
     if ("serviceWorker" in navigator) {
