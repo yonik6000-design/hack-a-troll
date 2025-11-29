@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hack A Troll – Endless PWA</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020617" />
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- Icon -->
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #1d0630 0, #020617 55%),
+        #020617;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .game {
+      background: rgba(6, 12, 31, 0.98);
+      border-radius: 22px;
+      width: 380px;
+      max-width: 100%;
+      padding: 16px 16px 18px;
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.9),
+        0 0 24px rgba(56, 189, 248, 0.35);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: #22f7b5;
+      text-shadow:
+        0 0 10px rgba(34, 247, 181, 0.9),
+        0 0 20px rgba(56, 189, 248, 0.7);
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+      gap: 6px;
+    }
+
+    .difficulty-label {
+      color: #9ca3af;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .difficulty-select {
+      background: #020617;
+      color: #e5e7eb;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      padding: 4px 9px;
+      font-size: 11px;
+      outline: none;
+    }
+
+    .reset-btn {
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 10px;
+      padding: 4px 10px;
+      cursor: pointer;
+      text-wrap: nowrap;
+    }
+
+    .reset-btn:hover {
+      background: #111827;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #020617, #020617 40%, #020617);
+      border-radius: 999px;
+      padding: 4px 11px;
+      border: 1px solid #111827;
+      font-size: 12px;
+      margin-bottom: 6px;
+      gap: 6px;
+    }
+
+    .hud-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hud-label {
+      color: #9ca3af;
+      font-weight: 600;
+    }
+
+    .hud-value {
+      font-weight: 800;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
+    }
+
+    .hud-value.good {
+      color: #22f7b5;
+    }
+
+    .hud-value.bad {
+      color: #fb7185;
+    }
+
+    .hud-value.level {
+      color: #a855f7;
+    }
+
+    .hud-value.best {
+      color: #facc15;
+    }
+
+    .hud-value.combo {
+      color: #38bdf8;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    button.main-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 20px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      background: radial-gradient(circle at top, #facc15, #eab308, #a855f7);
+      color: #020617;
+      box-shadow:
+        0 8px 22px rgba(250, 204, 21, 0.75),
+        0 0 14px rgba(248, 250, 252, 0.5);
+      text-transform: uppercase;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+    }
+
+    button.main-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow:
+        0 10px 28px rgba(250, 204, 21, 0.9),
+        0 0 18px rgba(248, 250, 252, 0.6);
+    }
+
+    button.main-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .board {
+      background: radial-gradient(circle at top, #020617 0, #020617 55%, #020617);
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid #0f172a;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 10px;
+      margin-bottom: 6px;
+      box-shadow: inset 0 0 24px rgba(15, 23, 42, 0.9);
+      transform-origin: center;
+    }
+
+    .hole {
+      width: 92px;
+      height: 92px;
+      max-width: 26vw;
+      max-height: 26vw;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #111827 0, #020617 65%, #020617 100%);
+      border: 2px solid #0b1120;
+      box-shadow:
+        inset 0 10px 14px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.1s ease;
+    }
+
+    .hole::after {
+      content: "";
+      position: absolute;
+      width: 60%;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent);
+      top: 16px;
+      filter: blur(1px);
+      opacity: 0.4;
+    }
+
+    .hole.active.bad {
+      border-color: #fb7185;
+      box-shadow:
+        inset 0 10px 14px rgba(0, 0, 0, 0.9),
+        0 0 14px rgba(248, 113, 113, 0.9);
+    }
+
+    .hole.active.good {
+      border-color: #22f7b5;
+      box-shadow:
+        inset 0 10px 14px rgba(0, 0, 0, 0.9),
+        0 0 14px rgba(34, 247, 181, 0.9);
+    }
+
+    .hole.active.heart {
+      border-color: #4ade80;
+      box-shadow:
+        inset 0 10px 14px rgba(0, 0, 0, 0.9),
+        0 0 16px rgba(74, 222, 128, 0.95);
+      animation: heartPulse 1s infinite;
+    }
+
+    .hole:active {
+      transform: scale(0.96);
+    }
+
+    .message {
+      min-height: 24px;
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #111827;
+    }
+
+    .pill.good {
+      background: #14532d;
+      color: #bbf7d0;
+    }
+
+    .pill.bad {
+      background: #7f1d1d;
+      color: #fecaca;
+    }
+
+    .pill.neutral {
+      background: #1f2937;
+      color: #e5e7eb;
+    }
+
+    .hint {
+      text-align: center;
+      font-size: 11px;
+      color: #9ca3af;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .runs-title {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+      margin-bottom: 2px;
+    }
+
+    .runs-list {
+      max-height: 100px;
+      overflow-y: auto;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: #020617;
+      padding: 4px 6px;
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .run-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .run-row:last-child {
+      border-bottom: none;
+    }
+
+    .run-meta {
+      color: #9ca3af;
+    }
+
+    .run-score {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .run-date {
+      color: #6b7280;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .achievements-title {
+      font-size: 11px;
+      color: #9ca3af;
+      margin: 4px 0 2px;
+    }
+
+    .achievements-list {
+      max-height: 80px;
+      overflow-y: auto;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: #020617;
+      padding: 4px 6px;
+      font-size: 11px;
+    }
+
+    .ach-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .ach-row:last-child {
+      border-bottom: none;
+    }
+
+    .ach-name {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .ach-desc {
+      color: #6b7280;
+      font-size: 10px;
+    }
+
+    .shake {
+      animation: shake 0.25s linear;
+    }
+
+    .score-flash {
+      animation: scoreFlash 0.25s ease;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-2px); }
+      100% { transform: translateX(0); }
+    }
+
+    @keyframes scoreFlash {
+      0% { transform: scale(1); color: #22f7b5; }
+      50% { transform: scale(1.25); color: #facc15; }
+      100% { transform: scale(1); color: #22f7b5; }
+    }
+
+    @keyframes heartPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <div class="title">HACK A TROLL</div>
+    <div class="subtitle">
+      מצב אינסופי · 😈 חסום את הרע · 😇 אל תיגע בטוב · 💚 נותן חיים · קומבואים, שיאים והישגים לכל רמה
+    </div>
+
+    <div class="top-row">
+      <div>
+        <span class="difficulty-label">רמת קושי:</span>
+        <select id="difficultySelect" class="difficulty-select">
+          <option value="easy">קל</option>
+          <option value="medium" selected>בינוני</option>
+          <option value="hard">קשה</option>
+        </select>
+      </div>
+      <button id="resetBtn" class="reset-btn">איפוס שיאים וריצות</button>
+    </div>
+
+    <div class="hud">
+      <div class="hud-item">
+        <span class="hud-label">ניקוד:</span>
+        <span id="score" class="hud-value good">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">חיים:</span>
+        <span id="lives" class="hud-value bad">3</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">שלב:</span>
+        <span id="level" class="hud-value level">1</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">שיא:</span>
+        <span id="best" class="hud-value best">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">קומבו:</span>
+        <span id="combo" class="hud-value combo">0</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn" class="main-btn">התחל משחק</button>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="message" id="message"></div>
+    <div class="hint">
+      המשחק נמשך עד שייגמרו החיים.  
+      😈 – לחץ לקבל נקודה (קומבו עולה). אם תפספס → מאבד חיים והקומבו מתאפס.  
+      😇 – אם תלחץ → מאבד חיים ומאפס קומבו.  
+      💚 – אם תלחץ → מקבל חיים (עד תקרה מוגבלת).
+    </div>
+
+    <div class="runs-title">ריצות אחרונות (לפי רמת הקושי הנוכחית):</div>
+    <div id="runsList" class="runs-list"></div>
+
+    <div class="achievements-title">הישגים שנפתחו:</div>
+    <div id="achievementsList" class="achievements-list"></div>
+  </div>
+
+  <!-- סאונדים (שים בתיקיית sounds) -->
+  <audio id="soundHitBad"   src="sounds/hit-bad.mp3" preload="auto"></audio>
+  <audio id="soundHitGood"  src="sounds/hit-good.mp3" preload="auto"></audio>
+  <audio id="soundMiss"     src="sounds/miss.mp3" preload="auto"></audio>
+  <audio id="soundLevelUp"  src="sounds/level-up.mp3" preload="auto"></audio>
+  <audio id="soundGameOver" src="sounds/game-over.mp3" preload="auto"></audio>
+
+  <script>
+    const NUM_HOLES = 9;
+    const MAX_LIVES = 3;
+    const EXTRA_LIFE_CAP = MAX_LIVES + 2; // עד 5 חיים
+    const HS_KEY   = "hack_a_troll_best_scores_v2";
+    const RUNS_KEY = "hack_a_troll_runs_v1";
+    const ACH_KEY  = "hack_a_troll_achievements_v1";
+    const MAX_RUNS_STORED = 10;
+
+    const DIFFICULTY_CONFIG = {
+      easy:   { baseSpawn: 650, baseLifetime: 1100, badProb: 0.40, heartProb: 0.10 },
+      medium: { baseSpawn: 500, baseLifetime: 900,  badProb: 0.45, heartProb: 0.08 },
+      hard:   { baseSpawn: 380, baseLifetime: 820,  badProb: 0.50, heartProb: 0.06 }
+    };
+
+    const ACHIEVEMENTS_DEF = [
+      { id: "first_blood",   name: "First Blood",       desc: "השגת את הנקודה הראשונה שלך." },
+      { id: "combo_3",       name: "Combo 3",           desc: "3 טרולים רעים ברצף בלי טעות." },
+      { id: "combo_5",       name: "Combo 5",           desc: "5 טרולים רעים ברצף." },
+      { id: "combo_10",      name: "Combo 10",          desc: "10 טרולים רעים ברצף – יפה מאוד." },
+      { id: "level_10",      name: "Level 10",          desc: "הגעת לשלב 10 או יותר." },
+      { id: "no_heart_50",   name: "Iron Will",         desc: "הגעת ל־50 נק' בריצה בלי לקחת שום לב." }
+    ];
+
+    const boardEl    = document.getElementById("board");
+    const scoreEl    = document.getElementById("score");
+    const livesEl    = document.getElementById("lives");
+    const levelEl    = document.getElementById("level");
+    const bestEl     = document.getElementById("best");
+    const comboEl    = document.getElementById("combo");
+    const messageEl  = document.getElementById("message");
+    const startBtn   = document.getElementById("startBtn");
+    const diffSelect = document.getElementById("difficultySelect");
+    const resetBtn   = document.getElementById("resetBtn");
+    const runsListEl = document.getElementById("runsList");
+    const achListEl  = document.getElementById("achievementsList");
+
+    // sounds
+    const sndHitBad   = document.getElementById("soundHitBad");
+    const sndHitGood  = document.getElementById("soundHitGood");
+    const sndMiss     = document.getElementById("soundMiss");
+    const sndLevelUp  = document.getElementById("soundLevelUp");
+    const sndGameOver = document.getElementById("soundGameOver");
+
+    const holes = [];
+    const activeTrolls = {}; // index -> { type: 'bad'|'good'|'heart', timeoutId, hit }
+
+    let score = 0;
+    let lives = MAX_LIVES;
+    let level = 1;
+    let combo = 0;
+    let maxCombo = 0;
+    let bestScores = { easy: 0, medium: 0, hard: 0 };
+    let gameRunning = false;
+    let spawnIntervalId = null;
+    let currentConfig = DIFFICULTY_CONFIG.medium;
+    let currentDifficulty = "medium";
+    let runs = [];
+    let achievements = {};
+    let usedHeartThisRun = false;
+
+    function playSound(soundEl) {
+      if (!soundEl) return;
+      try {
+        soundEl.currentTime = 0;
+        soundEl.play();
+      } catch (_) {}
+    }
+
+    function pulseBoardDamage() {
+      boardEl.classList.add("shake");
+      setTimeout(() => boardEl.classList.remove("shake"), 250);
+    }
+
+    function flashScore() {
+      scoreEl.classList.add("score-flash");
+      setTimeout(() => scoreEl.classList.remove("score-flash"), 250);
+    }
+
+    function initBoard() {
+      for (let i = 0; i < NUM_HOLES; i++) {
+        const hole = document.createElement("div");
+        hole.className = "hole";
+        hole.dataset.index = i.toString();
+        hole.textContent = "";
+        hole.addEventListener("click", onHoleClick);
+        boardEl.appendChild(hole);
+        holes.push(hole);
+      }
+    }
+
+    function loadBestScores() {
+      try {
+        const stored = localStorage.getItem(HS_KEY);
+        if (stored) {
+          let parsed;
+          try {
+            parsed = JSON.parse(stored);
+          } catch {
+            const num = parseInt(stored, 10);
+            if (!isNaN(num)) bestScores.medium = num;
+          }
+          if (parsed && typeof parsed === "object") {
+            bestScores = { ...bestScores, ...parsed };
+          }
+        }
+      } catch (_) {}
+      bestEl.textContent = (bestScores[currentDifficulty] || 0).toString();
+    }
+
+    function loadRuns() {
+      try {
+        const stored = localStorage.getItem(RUNS_KEY);
+        if (stored) {
+          const arr = JSON.parse(stored);
+          if (Array.isArray(arr)) runs = arr;
+        }
+      } catch (_) {}
+    }
+
+    function loadAchievements() {
+      try {
+        const stored = localStorage.getItem(ACH_KEY);
+        if (stored) {
+          const obj = JSON.parse(stored);
+          if (obj && typeof obj === "object") achievements = obj;
+        }
+      } catch (_) {}
+      ACHIEVEMENTS_DEF.forEach(a => {
+        if (!(a.id in achievements)) achievements[a.id] = false;
+      });
+    }
+
+    function saveRuns() {
+      try {
+        localStorage.setItem(RUNS_KEY, JSON.stringify(runs));
+      } catch (_) {}
+    }
+
+    function saveAchievements() {
+      try {
+        localStorage.setItem(ACH_KEY, JSON.stringify(achievements));
+      } catch (_) {}
+    }
+
+    function renderRuns() {
+      const filtered = runs.filter(r => r.difficulty === currentDifficulty);
+      if (!filtered.length) {
+        runsListEl.innerHTML = "<div class='run-meta'>אין ריצות לקושי הזה – שחק פעם אחת.</div>";
+        return;
+      }
+
+      runsListEl.innerHTML = "";
+      filtered.forEach((run, idx) => {
+        const row = document.createElement("div");
+        row.className = "run-row";
+
+        const left = document.createElement("div");
+        left.className = "run-meta";
+        left.textContent = `#${filtered.length - idx} · ${labelDifficulty(run.difficulty)} · שלב ${run.level}`;
+
+        const middle = document.createElement("div");
+        middle.className = "run-score";
+        middle.textContent = `${run.score} נק'`;
+
+        const right = document.createElement("div");
+        right.className = "run-date";
+        right.textContent = run.time;
+
+        row.appendChild(left);
+        row.appendChild(middle);
+        row.appendChild(right);
+
+        runsListEl.appendChild(row);
+      });
+    }
+
+    function renderAchievements() {
+      const unlocked = ACHIEVEMENTS_DEF.filter(a => achievements[a.id]);
+      if (!unlocked.length) {
+        achListEl.innerHTML = "<div class='ach-desc'>עוד אין הישגים – תתחיל לצבור נקודות.</div>";
+        return;
+      }
+      achListEl.innerHTML = "";
+      unlocked.forEach(a => {
+        const row = document.createElement("div");
+        row.className = "ach-row";
+
+        const name = document.createElement("div");
+        name.className = "ach-name";
+        name.textContent = a.name;
+
+        const desc = document.createElement("div");
+        desc.className = "ach-desc";
+        desc.textContent = a.desc;
+
+        row.appendChild(name);
+        row.appendChild(desc);
+        achListEl.appendChild(row);
+      });
+    }
+
+    function labelDifficulty(diff) {
+      if (diff === "easy") return "קל";
+      if (diff === "hard") return "קשה";
+      return "בינוני";
+    }
+
+    function updateBestScoreIfNeeded() {
+      const currentBest = bestScores[currentDifficulty] || 0;
+      if (score > currentBest) {
+        bestScores[currentDifficulty] = score;
+        bestEl.textContent = score.toString();
+        try {
+          localStorage.setItem(HS_KEY, JSON.stringify(bestScores));
+        } catch (_) {}
+      }
+    }
+
+    function recordRun() {
+      const now = new Date();
+      const timeStr = now.toLocaleString("he-IL", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      const run = {
+        score,
+        level,
+        difficulty: currentDifficulty,
+        time: timeStr
+      };
+
+      runs.unshift(run);
+      if (runs.length > MAX_RUNS_STORED) {
+        runs = runs.slice(0, MAX_RUNS_STORED);
+      }
+      saveRuns();
+      renderRuns();
+    }
+
+    function updateHud() {
+      scoreEl.textContent = score.toString();
+      livesEl.textContent = lives.toString();
+      levelEl.textContent = level.toString();
+      bestEl.textContent = (bestScores[currentDifficulty] || 0).toString();
+      comboEl.textContent = combo.toString();
+    }
+
+    function setMessage(text, type = "neutral") {
+      if (!text) {
+        messageEl.innerHTML = "";
+        return;
+      }
+      const cls = type === "good" ? "good" : type === "bad" ? "bad" : "neutral";
+      messageEl.innerHTML = `<span class="pill ${cls}">${text}</span>`;
+    }
+
+    function clearAllTrolls() {
+      for (const idxStr in activeTrolls) {
+        const idx = Number(idxStr);
+        const info = activeTrolls[idx];
+        clearTimeout(info.timeoutId);
+        const hole = holes[idx];
+        hole.classList.remove("active", "good", "bad", "heart");
+        hole.textContent = "";
+        delete activeTrolls[idx];
+      }
+    }
+
+    function unlockAchievement(id) {
+      if (achievements[id]) return;
+      achievements[id] = true;
+      saveAchievements();
+      renderAchievements();
+      const def = ACHIEVEMENTS_DEF.find(a => a.id === id);
+      if (def) {
+        setMessage(`הישג חדש: ${def.name}`, "good");
+        playSound(sndLevelUp);
+      }
+    }
+
+    function checkAchievementsOnProgress() {
+      if (score >= 1) unlockAchievement("first_blood");
+      if (combo >= 3) unlockAchievement("combo_3");
+      if (combo >= 5) unlockAchievement("combo_5");
+      if (combo >= 10) unlockAchievement("combo_10");
+      if (level >= 10) unlockAchievement("level_10");
+    }
+
+    function checkAchievementsOnRunEnd() {
+      if (!usedHeartThisRun && score >= 50) {
+        unlockAchievement("no_heart_50");
+      }
+    }
+
+    function endGame() {
+      gameRunning = false;
+      clearInterval(spawnIntervalId);
+      spawnIntervalId = null;
+      clearAllTrolls();
+      updateBestScoreIfNeeded();
+      checkAchievementsOnRunEnd();
+      recordRun();
+      startBtn.disabled = false;
+      diffSelect.disabled = false;
+      setMessage(
+        `Game Over – ניקוד: ${score} | שיא (${labelDifficulty(currentDifficulty)}): ${bestScores[currentDifficulty] || 0}`,
+        "bad"
+      );
+      playSound(sndGameOver);
+    }
+
+    function checkGameOver() {
+      if (lives <= 0) {
+        endGame();
+      }
+    }
+
+    function getLevelAdjustedSpawn() {
+      const factor = Math.pow(0.9, level - 1);
+      return Math.max(200, Math.round(currentConfig.baseSpawn * factor));
+    }
+
+    function getLevelAdjustedLifetime() {
+      const factor = Math.pow(0.93, level - 1);
+      return Math.max(300, Math.round(currentConfig.baseLifetime * factor));
+    }
+
+    function spawnTroll() {
+      if (!gameRunning) return;
+
+      const currentActive = Object.keys(activeTrolls).length;
+      if (currentActive >= 3) return;
+
+      const freeIndices = [];
+      for (let i = 0; i < NUM_HOLES; i++) {
+        if (!activeTrolls[i]) freeIndices.push(i);
+      }
+      if (freeIndices.length === 0) return;
+
+      const holeIndex = freeIndices[Math.floor(Math.random() * freeIndices.length)];
+
+      const r = Math.random();
+      let type;
+      if (r < currentConfig.heartProb) {
+        type = "heart";
+      } else {
+        type = Math.random() < currentConfig.badProb ? "bad" : "good";
+      }
+
+      const hole = holes[holeIndex];
+
+      activeTrolls[holeIndex] = {
+        type,
+        timeoutId: null,
+        hit: false
+      };
+
+      hole.classList.add("active");
+      hole.classList.add(type);
+      hole.textContent =
+        type === "bad" ? "😈" :
+        type === "good" ? "😇" :
+        "💚";
+
+      const lifetime = getLevelAdjustedLifetime();
+
+      const timeoutId = setTimeout(() => {
+        const troll = activeTrolls[holeIndex];
+        if (!troll) return;
+
+        if (!troll.hit) {
+          if (troll.type === "bad") {
+            lives -= 1;
+            combo = 0;
+            updateHud();
+            setMessage("פספסת טרול רע – איבדת חיים והקומבו התאפס.", "bad");
+            playSound(sndMiss);
+            pulseBoardDamage();
+            checkGameOver();
+          }
+        }
+
+        hole.classList.remove("active", "good", "bad", "heart");
+        hole.textContent = "";
+        delete activeTrolls[holeIndex];
+      }, lifetime);
+
+      activeTrolls[holeIndex].timeoutId = timeoutId;
+    }
+
+    function onHoleClick(event) {
+      if (!gameRunning) return;
+      const hole = event.currentTarget;
+      const index = Number(hole.dataset.index);
+      const troll = activeTrolls[index];
+      if (!troll) return;
+
+      if (troll.hit) return;
+      troll.hit = true;
+
+      clearTimeout(troll.timeoutId);
+
+      if (troll.type === "bad") {
+        score += 1;
+        combo += 1;
+        if (combo > maxCombo) maxCombo = combo;
+        flashScore();
+        setMessage(`חסמת טרול רע – +1 נקודה! (קומבו ${combo})`, "good");
+        playSound(sndHitBad);
+        handleLevelProgress();
+        checkAchievementsOnProgress();
+      } else if (troll.type === "good") {
+        lives -= 1;
+        combo = 0;
+        setMessage("זה היה טרול טוב – איבדת חיים והקומבו התאפס.", "bad");
+        playSound(sndHitGood);
+        pulseBoardDamage();
+      } else if (troll.type === "heart") {
+        usedHeartThisRun = true;
+        if (lives < EXTRA_LIFE_CAP) {
+          lives += 1;
+          setMessage("קיבלת לב 💚 – חיים נוסף!", "good");
+        } else {
+          setMessage("לב 💚 נוסף – אבל כבר הגעת למקסימום.", "good");
+        }
+        playSound(sndLevelUp);
+      }
+
+      updateHud();
+      hole.classList.remove("active", "good", "bad", "heart");
+      hole.textContent = "";
+      delete activeTrolls[index];
+
+      checkGameOver();
+    }
+
+    function handleLevelProgress() {
+      const newLevel = Math.floor(score / 8) + 1;
+      if (newLevel > level) {
+        level = newLevel;
+        updateHud();
+        setMessage(`עלית לשלב ${level}!`, "good");
+        playSound(sndLevelUp);
+
+        if (spawnIntervalId) {
+          clearInterval(spawnIntervalId);
+          const newSpawn = getLevelAdjustedSpawn();
+          spawnIntervalId = setInterval(spawnTroll, newSpawn);
+        }
+      }
+    }
+
+    function startGame() {
+      if (gameRunning) return;
+
+      const diff = diffSelect.value;
+      currentDifficulty = diff;
+      currentConfig = DIFFICULTY_CONFIG[diff] || DIFFICULTY_CONFIG.medium;
+
+      score = 0;
+      lives = MAX_LIVES;
+      level = 1;
+      combo = 0;
+      maxCombo = 0;
+      usedHeartThisRun = false;
+      updateHud();
+      clearAllTrolls();
+      setMessage("Go! מצב אינסופי – נסה לשבור את השיא של הקושי הזה.", "good");
+
+      gameRunning = true;
+      startBtn.disabled = true;
+      diffSelect.disabled = true;
+
+      const spawnMs = getLevelAdjustedSpawn();
+      spawnIntervalId = setInterval(spawnTroll, spawnMs);
+      spawnTroll();
+    }
+
+    function resetAllData() {
+      if (!confirm("לאפס שיאים, ריצות והישגים? הפעולה לא ניתנת לשחזור.")) return;
+      bestScores = { easy: 0, medium: 0, hard: 0 };
+      runs = [];
+      achievements = {};
+      ACHIEVEMENTS_DEF.forEach(a => achievements[a.id] = false);
+      try {
+        localStorage.removeItem(HS_KEY);
+        localStorage.removeItem(RUNS_KEY);
+        localStorage.removeItem(ACH_KEY);
+      } catch (_) {}
+      score = 0;
+      lives = MAX_LIVES;
+      level = 1;
+      combo = 0;
+      maxCombo = 0;
+      updateHud();
+      renderRuns();
+      renderAchievements();
+      setMessage("הכול אופס – אפשר לבנות שיאים חדשים.", "neutral");
+    }
+
+    startBtn.addEventListener("click", startGame);
+
+    diffSelect.addEventListener("change", () => {
+      if (gameRunning) return;
+      currentDifficulty = diffSelect.value;
+      currentConfig = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.medium;
+      updateHud();
+      renderRuns();
+      setMessage(`מציג שיא וריצות לקושי: ${labelDifficulty(currentDifficulty)}.`, "neutral");
+    });
+
+    resetBtn.addEventListener("click", resetAllData);
+
+    // init
+    initBoard();
+    loadBestScores();
+    loadRuns();
+    loadAchievements();
+    renderRuns();
+    renderAchievements();
+    updateHud();
+    setMessage("בחר קושי, לחץ \"התחל משחק\" – וצבור קומבואים, שיאים והישגים.", "neutral");
+
+    // PWA – Service Worker
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("sw.js")
+          .catch(err => console.error("Service worker registration failed:", err));
+      });
+    }
+  </script>
+</body>
+</html>
