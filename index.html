@@ -30,6 +30,26 @@
       justify-content: center;
       align-items: center;
       padding: 10px;
+      transition: background 0.4s ease;
+    }
+
+    body[data-skin="neon"] {
+      background:
+        radial-gradient(circle at top, #0f172a 0, #020617 40%),
+        radial-gradient(circle at bottom, #0369a1 0, #020617 55%),
+        #020617;
+    }
+
+    body[data-skin="blood"] {
+      background:
+        radial-gradient(circle at top, #450a0a 0, #020617 50%),
+        #020617;
+    }
+
+    body[data-skin="ice"] {
+      background:
+        radial-gradient(circle at top, #0ea5e9 0, #020617 45%),
+        #020617;
     }
 
     .game {
@@ -44,6 +64,28 @@
       border: 1px solid rgba(15, 23, 42, 0.9);
       position: relative;
       z-index: 1;
+      transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    body[data-skin="neon"] .game {
+      box-shadow:
+        0 22px 60px rgba(8, 47, 73, 0.95),
+        0 0 30px rgba(56, 189, 248, 0.6);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    body[data-skin="blood"] .game {
+      box-shadow:
+        0 22px 60px rgba(127, 29, 29, 0.9),
+        0 0 28px rgba(248, 113, 113, 0.6);
+      border-color: rgba(248, 113, 113, 0.5);
+    }
+
+    body[data-skin="ice"] .game {
+      box-shadow:
+        0 22px 60px rgba(15, 23, 42, 0.95),
+        0 0 30px rgba(125, 211, 252, 0.7);
+      border-color: rgba(125, 211, 252, 0.5);
     }
 
     .title {
@@ -56,6 +98,20 @@
         0 0 10px rgba(34, 247, 181, 0.9),
         0 0 20px rgba(56, 189, 248, 0.7);
       margin-bottom: 4px;
+    }
+
+    body[data-skin="blood"] .title {
+      color: #fecaca;
+      text-shadow:
+        0 0 10px rgba(248, 113, 113, 0.9),
+        0 0 20px rgba(248, 113, 113, 0.7);
+    }
+
+    body[data-skin="ice"] .title {
+      color: #bfdbfe;
+      text-shadow:
+        0 0 10px rgba(96, 165, 250, 0.9),
+        0 0 20px rgba(56, 189, 248, 0.7);
     }
 
     .subtitle {
@@ -157,6 +213,7 @@
       font-size: 12px;
       margin-bottom: 6px;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .hud-item {
@@ -193,6 +250,10 @@
 
     .hud-value.combo {
       color: #38bdf8;
+    }
+
+    .hud-value.coins {
+      color: #fbbf24;
     }
 
     .controls {
@@ -264,6 +325,25 @@
       margin-bottom: 6px;
       box-shadow: inset 0 0 24px rgba(15, 23, 42, 0.9);
       transform-origin: center;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body[data-skin="neon"] .board {
+      border-color: #0ea5e9;
+      box-shadow: inset 0 0 24px rgba(15, 23, 42, 0.9),
+                  0 0 18px rgba(56, 189, 248, 0.5);
+    }
+
+    body[data-skin="blood"] .board {
+      border-color: #b91c1c;
+      box-shadow: inset 0 0 24px rgba(15, 23, 42, 0.9),
+                  0 0 18px rgba(248, 113, 113, 0.5);
+    }
+
+    body[data-skin="ice"] .board {
+      border-color: #38bdf8;
+      box-shadow: inset 0 0 24px rgba(15, 23, 42, 0.9),
+                  0 0 18px rgba(59, 130, 246, 0.5);
     }
 
     .hole {
@@ -283,7 +363,19 @@
       font-size: 36px;
       cursor: pointer;
       position: relative;
-      transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.1s ease;
+      transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.1s ease, background 0.3s ease;
+    }
+
+    body[data-skin="neon"] .hole {
+      background: radial-gradient(circle at 30% 20%, #0f172a 0, #020617 65%, #020617 100%);
+    }
+
+    body[data-skin="blood"] .hole {
+      background: radial-gradient(circle at 30% 20%, #450a0a 0, #020617 65%, #020617 100%);
+    }
+
+    body[data-skin="ice"] .hole {
+      background: radial-gradient(circle at 30% 20%, #0f172a 0, #020617 65%, #020617 100%);
     }
 
     .hole::after {
@@ -305,11 +397,25 @@
         0 0 14px rgba(248, 113, 113, 0.9);
     }
 
+    body[data-skin="blood"] .hole.active.bad {
+      border-color: #f97373;
+      box-shadow:
+        inset 0 10px 14px rgba(0, 0, 0, 0.9),
+        0 0 16px rgba(248, 113, 113, 1);
+    }
+
     .hole.active.good {
       border-color: #22f7b5;
       box-shadow:
         inset 0 10px 14px rgba(0, 0, 0, 0.9),
         0 0 14px rgba(34, 247, 181, 0.9);
+    }
+
+    body[data-skin="ice"] .hole.active.good {
+      border-color: #a5f3fc;
+      box-shadow:
+        inset 0 10px 14px rgba(0, 0, 0, 0.9),
+        0 0 16px rgba(125, 211, 252, 1);
     }
 
     .hole.active.heart {
@@ -472,7 +578,7 @@
       100% { transform: scale(1); }
     }
 
-    /* מסך כניסה (Splash / Login) */
+    /* מסך כניסה + חנות סקינים */
     .intro-overlay {
       position: fixed;
       inset: 0;
@@ -488,7 +594,7 @@
 
     .intro-panel {
       width: 90%;
-      max-width: 360px;
+      max-width: 380px;
       border-radius: 24px;
       padding: 20px 16px 18px;
       background: rgba(15, 23, 42, 0.98);
@@ -527,7 +633,7 @@
       font-size: 11px;
       color: #d1d5db;
       line-height: 1.5;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .intro-btn {
@@ -563,31 +669,137 @@
     .intro-note b {
       color: #e5e7eb;
     }
+
+    .shop-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .shop-coins {
+      font-size: 12px;
+      margin-bottom: 6px;
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .skins-list {
+      max-height: 190px;
+      overflow-y: auto;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: #020617;
+      padding: 4px 6px;
+      font-size: 11px;
+      text-align: left;
+    }
+
+    .skin-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 4px 2px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+      align-items: center;
+    }
+
+    .skin-row:last-child {
+      border-bottom: none;
+    }
+
+    .skin-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .skin-name {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .skin-desc {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .skin-meta {
+      text-align: right;
+      min-width: 90px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: flex-end;
+    }
+
+    .skin-cost {
+      font-size: 10px;
+      color: #fbbf24;
+    }
+
+    .skin-status {
+      font-size: 10px;
+      color: #a5b4fc;
+    }
+
+    .skin-btn {
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 3px 8px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .skin-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .skin-btn:not(:disabled):hover {
+      background: #111827;
+    }
   </style>
 </head>
 <body>
-  <!-- מסך כניסה / Splash -->
+  <!-- מסך כניסה + חנות -->
   <div id="introOverlay" class="intro-overlay">
-    <div class="intro-panel">
+    <div id="introPanel" class="intro-panel">
       <div class="intro-title">HACK A TROLL</div>
       <div class="intro-subtitle">גרסת טרולים אינסופית · Inspired by NY</div>
       <div class="intro-icons">😈 😇 💚</div>
       <div class="intro-text">
-        חסום את הטרולים הרעים, היזהר מהטובים, אסוף לבבות,  
-        וצבור שיאים לכל שחקן ורמת קושי.  
-        במסך הבא תבחר שם שחקן ותתחיל.
+        חסום את הטרולים הרעים, היזהר מהטובים, אסוף לבבות וסקינים,  
+        וצבור שיאים לכל שחקן ורמת קושי.
       </div>
       <button id="introStartBtn" class="intro-btn">היכנס למשחק</button>
+      <button id="openShopBtn" class="secondary-btn" style="width:100%;margin-top:6px;">
+        חנות סקינים 🪙
+      </button>
       <div class="intro-note">
-        טיפ: <b>תן שם אחר לכל שחקן</b> (יוני, אחיין, חברים) ותראו מי שובר את מי.
+        מטבע זהב אחד על כל ריצה מעל <b>60 (קשה)</b>, <b>70 (בינוני)</b>, <b>100 (קל)</b>.  
+        כל סקין עולה <b>15 מטבעות</b>.
       </div>
+    </div>
+
+    <div id="shopPanel" class="intro-panel" style="display:none;">
+      <div class="shop-title">חנות סקינים</div>
+      <div class="intro-text">
+        שחק, שבור שיאים לפי רמת קושי, אסוף מטבעות זהב ופתח סקינים.
+      </div>
+      <div class="shop-coins">מטבעות נוכחיים: <span id="shopCoins">0</span> 🪙</div>
+      <div id="skinsList" class="skins-list"></div>
+      <button id="shopBackBtn" class="secondary-btn" style="width:100%;margin-top:10px;">
+        חזרה למסך הראשי
+      </button>
     </div>
   </div>
 
   <div class="game">
     <div class="title">HACK A TROLL</div>
     <div class="subtitle">
-      מצב אינסופי · שמות שחקנים · שיאים לפי שחקן וקושי · כפתור שיתוף תוצאה
+      מצב אינסופי · שמות שחקנים · שיאים לפי שחקן וקושי · מטבעות וסקינים · שיתוף תוצאה
     </div>
 
     <div class="player-row">
@@ -631,6 +843,10 @@
         <span class="hud-label">קומבו:</span>
         <span id="combo" class="hud-value combo">0</span>
       </div>
+      <div class="hud-item">
+        <span class="hud-label">מטבעות:</span>
+        <span id="coins" class="hud-value coins">0</span>
+      </div>
     </div>
 
     <div class="controls">
@@ -645,7 +861,8 @@
       כל שיא וריצות נשמרים לפי <b>שחקן + רמת קושי</b>.  
       😈 – לחץ לקבל נקודה (קומבו עולה). אם תפספס → מאבד חיים והקומבו מתאפס.  
       😇 – אם תלחץ → מאבד חיים ומאפס קומבו.  
-      💚 – אם תלחץ → מקבל חיים (עד תקרה מוגבלת).
+      💚 – אם תלחץ → מקבל חיים (עד תקרה מוגבלת).  
+      🪙 – מטבע זהב על ריצה חזקה (60/70/100 לפי קושי), 15 מטבעות לסקין.
     </div>
 
     <div class="runs-title">ריצות אחרונות (שחקן ורמת קושי נוכחיים):</div>
@@ -655,7 +872,7 @@
     <div id="achievementsList" class="achievements-list"></div>
   </div>
 
-  <!-- סאונדים (שים בתיקיית sounds) -->
+  <!-- סאונדים -->
   <audio id="soundHitBad"   src="sounds/hit-bad.mp3" preload="auto"></audio>
   <audio id="soundHitGood"  src="sounds/hit-good.mp3" preload="auto"></audio>
   <audio id="soundMiss"     src="sounds/miss.mp3" preload="auto"></audio>
@@ -666,10 +883,14 @@
     const NUM_HOLES = 9;
     const MAX_LIVES = 3;
     const EXTRA_LIFE_CAP = MAX_LIVES + 2;
-    const HS_KEY   = "hack_a_troll_best_scores_v2";
-    const RUNS_KEY = "hack_a_troll_runs_v2";
-    const ACH_KEY  = "hack_a_troll_achievements_v1";
+
+    const HS_KEY      = "hack_a_troll_best_scores_v2";
+    const RUNS_KEY    = "hack_a_troll_runs_v2";
+    const ACH_KEY     = "hack_a_troll_achievements_v1";
     const PLAYERS_KEY = "hack_a_troll_players_v1";
+    const COINS_KEY   = "hack_a_troll_coins_v1";
+    const SKINS_KEY   = "hack_a_troll_skins_v1";
+
     const MAX_RUNS_STORED = 50;
 
     const DIFFICULTY_CONFIG = {
@@ -677,6 +898,44 @@
       medium: { baseSpawn: 500, baseLifetime: 900,  badProb: 0.45, heartProb: 0.08 },
       hard:   { baseSpawn: 380, baseLifetime: 820,  badProb: 0.50, heartProb: 0.06 }
     };
+
+    // ספי מטבעות: כל ריצה מעל ערך זה לקושי → מטבע זהב אחד
+    const COIN_THRESHOLDS = {
+      easy: 100,
+      medium: 70,
+      hard: 60
+    };
+
+    const SKINS_DEF = [
+      {
+        id: "default",
+        name: "ברירת מחדל",
+        cost: 0,
+        desc: "העיצוב הקלאסי של Hack A Troll.",
+        emojis: "😈 😇 💚"
+      },
+      {
+        id: "neon",
+        name: "ניאון האקר",
+        cost: 15,
+        desc: "אווירת האקר ניאונית, אור כחול–טורקיז.",
+        emojis: "😈 👾 💚"
+      },
+      {
+        id: "blood",
+        name: "Blood Mode",
+        cost: 15,
+        desc: "רקע אדמדם ואווירת Hard Mode פסיכית.",
+        emojis: "😈 🔥 💚"
+      },
+      {
+        id: "ice",
+        name: "Frost Byte",
+        cost: 15,
+        desc: "סקין קרח–סייבר עם גווני כחול–טורקיז.",
+        emojis: "😈 ❄️ 💚"
+      }
+    ];
 
     const ACHIEVEMENTS_DEF = [
       { id: "first_blood",   name: "First Blood",       desc: "השגת את הנקודה הראשונה שלך." },
@@ -693,6 +952,7 @@
     const levelEl        = document.getElementById("level");
     const bestEl         = document.getElementById("best");
     const comboEl        = document.getElementById("combo");
+    const coinsEl        = document.getElementById("coins");
     const messageEl      = document.getElementById("message");
     const startBtn       = document.getElementById("startBtn");
     const shareBtn       = document.getElementById("shareBtn");
@@ -702,8 +962,15 @@
     const achListEl      = document.getElementById("achievementsList");
     const playerNameEl   = document.getElementById("playerName");
     const playerSelectEl = document.getElementById("playerSelect");
+
     const introOverlayEl = document.getElementById("introOverlay");
+    const introPanelEl   = document.getElementById("introPanel");
+    const shopPanelEl    = document.getElementById("shopPanel");
     const introStartBtn  = document.getElementById("introStartBtn");
+    const openShopBtn    = document.getElementById("openShopBtn");
+    const shopCoinsEl    = document.getElementById("shopCoins");
+    const skinsListEl    = document.getElementById("skinsList");
+    const shopBackBtn    = document.getElementById("shopBackBtn");
 
     const sndHitBad   = document.getElementById("soundHitBad");
     const sndHitGood  = document.getElementById("soundHitGood");
@@ -730,6 +997,11 @@
     let players = [];
     let currentPlayer = "";
     let lastRun = null;
+    let coins = 0;
+    let skinsState = {
+      owned: ["default"],
+      selected: "default"
+    };
 
     const GAME_URL = window.location.href.split("#")[0];
 
@@ -816,6 +1088,34 @@
       renderPlayersSelect();
     }
 
+    function loadCoins() {
+      try {
+        const stored = localStorage.getItem(COINS_KEY);
+        if (stored !== null) {
+          const val = parseInt(stored, 10);
+          if (!isNaN(val) && val >= 0) coins = val;
+        }
+      } catch (_) {}
+    }
+
+    function loadSkins() {
+      try {
+        const stored = localStorage.getItem(SKINS_KEY);
+        if (stored) {
+          const obj = JSON.parse(stored);
+          if (obj && typeof obj === "object") {
+            if (Array.isArray(obj.owned)) skinsState.owned = obj.owned;
+            if (typeof obj.selected === "string") skinsState.selected = obj.selected;
+          }
+        }
+      } catch (_) {}
+      if (!skinsState.owned.includes("default")) {
+        skinsState.owned.push("default");
+      }
+      if (!skinsState.selected) skinsState.selected = "default";
+      applySkin(skinsState.selected);
+    }
+
     function saveRuns() {
       try {
         localStorage.setItem(RUNS_KEY, JSON.stringify(runs));
@@ -831,6 +1131,18 @@
     function savePlayers() {
       try {
         localStorage.setItem(PLAYERS_KEY, JSON.stringify(players));
+      } catch (_) {}
+    }
+
+    function saveCoins() {
+      try {
+        localStorage.setItem(COINS_KEY, String(coins));
+      } catch (_) {}
+    }
+
+    function saveSkins() {
+      try {
+        localStorage.setItem(SKINS_KEY, JSON.stringify(skinsState));
       } catch (_) {}
     }
 
@@ -952,12 +1264,24 @@
       renderRuns();
     }
 
+    function awardCoinsForRun() {
+      const thr = COIN_THRESHOLDS[currentDifficulty];
+      if (!thr) return 0;
+      if (score >= thr) {
+        coins += 1;
+        saveCoins();
+        return 1;
+      }
+      return 0;
+    }
+
     function updateHud() {
       scoreEl.textContent = score.toString();
       livesEl.textContent = lives.toString();
       levelEl.textContent = level.toString();
       bestEl.textContent = (bestScores[currentDifficulty] || 0).toString();
       comboEl.textContent = combo.toString();
+      coinsEl.textContent = coins.toString();
     }
 
     function setMessage(text, type = "neutral") {
@@ -1014,14 +1338,19 @@
       clearAllTrolls();
       updateBestScoreIfNeeded();
       checkAchievementsOnRunEnd();
+      const earnedCoins = awardCoinsForRun();
       recordRun();
       startBtn.disabled = false;
       diffSelect.disabled = false;
       shareBtn.disabled = !lastRun;
-      setMessage(
-        `Game Over – שחקן ${currentPlayer || "ללא שם"} | ניקוד: ${score} | שיא (${labelDifficulty(currentDifficulty)}): ${bestScores[currentDifficulty] || 0}`,
-        "bad"
-      );
+      updateHud();
+
+      let msg =
+        `Game Over – שחקן ${currentPlayer || "ללא שם"} | ניקוד: ${score} | שיא (${labelDifficulty(currentDifficulty)}): ${bestScores[currentDifficulty] || 0}`;
+      if (earnedCoins > 0) {
+        msg += ` | קיבלת ${earnedCoins} מטבע זהב 🪙`;
+      }
+      setMessage(msg, "bad");
       playSound(sndGameOver);
     }
 
@@ -1217,19 +1546,23 @@
     }
 
     function resetAllData() {
-      if (!confirm("לאפס שיאים, ריצות, הישגים ושמות שחקנים? הפעולה לא ניתנת לשחזור.")) return;
+      if (!confirm("לאפס שיאים, ריצות, הישגים, שמות שחקנים, מטבעות וסקינים? הפעולה לא ניתנת לשחזור.")) return;
       bestScores = { easy: 0, medium: 0, hard: 0 };
       runs = [];
       achievements = {};
       players = [];
       currentPlayer = "";
       lastRun = null;
+      coins = 0;
+      skinsState = { owned: ["default"], selected: "default" };
       ACHIEVEMENTS_DEF.forEach(a => achievements[a.id] = false);
       try {
         localStorage.removeItem(HS_KEY);
         localStorage.removeItem(RUNS_KEY);
         localStorage.removeItem(ACH_KEY);
         localStorage.removeItem(PLAYERS_KEY);
+        localStorage.removeItem(COINS_KEY);
+        localStorage.removeItem(SKINS_KEY);
       } catch (_) {}
       score = 0;
       lives = MAX_LIVES;
@@ -1238,11 +1571,12 @@
       maxCombo = 0;
       playerNameEl.value = "";
       renderPlayersSelect();
+      applySkin("default");
       updateHud();
       renderRuns();
       renderAchievements();
       shareBtn.disabled = true;
-      setMessage("הכול אופס – אפשר להתחיל ליגת שחקנים מאפס.", "neutral");
+      setMessage("הכול אופס – אפשר להתחיל ליגת שחקנים וסקינים מאפס.", "neutral");
     }
 
     async function shareLastRun() {
@@ -1255,6 +1589,7 @@
         `שחקן: ${lastRun.player}\n` +
         `קושי: ${labelDifficulty(lastRun.difficulty)}\n` +
         `ניקוד: ${lastRun.score}, שלב: ${lastRun.level}\n` +
+        `מטבעות: ${coins}\n` +
         `בוא תנסה לשבור אותי: ${GAME_URL}`;
 
       if (navigator.share) {
@@ -1276,6 +1611,109 @@
       } else {
         setMessage("הדפדפן לא תומך בשיתוף – תשתף ידנית עם הקישור.", "bad");
       }
+    }
+
+    function applySkin(id) {
+      document.body.dataset.skin = id || "default";
+    }
+
+    function renderShop() {
+      shopCoinsEl.textContent = coins.toString();
+      skinsListEl.innerHTML = "";
+
+      SKINS_DEF.forEach(skin => {
+        const row = document.createElement("div");
+        row.className = "skin-row";
+
+        const main = document.createElement("div");
+        main.className = "skin-main";
+
+        const name = document.createElement("div");
+        name.className = "skin-name";
+        name.textContent = `${skin.name} ${skin.emojis}`;
+
+        const desc = document.createElement("div");
+        desc.className = "skin-desc";
+        desc.textContent = skin.desc;
+
+        main.appendChild(name);
+        main.appendChild(desc);
+
+        const meta = document.createElement("div");
+        meta.className = "skin-meta";
+
+        const cost = document.createElement("div");
+        cost.className = "skin-cost";
+        if (skin.cost > 0) {
+          cost.textContent = `${skin.cost} מטבעות`;
+        } else {
+          cost.textContent = "חינמי";
+        }
+
+        const status = document.createElement("div");
+        status.className = "skin-status";
+
+        const btn = document.createElement("button");
+        btn.className = "skin-btn";
+
+        const owned = skinsState.owned.includes(skin.id);
+        const selected = skinsState.selected === skin.id;
+
+        if (!owned && skin.cost > 0) {
+          status.textContent = "לא נפתח";
+          btn.textContent = coins >= skin.cost ? "קנה" : "חסר מטבעות";
+          btn.disabled = coins < skin.cost;
+          btn.dataset.action = "buy";
+        } else {
+          status.textContent = selected ? "סקין נבחר" : "נפתח";
+          if (selected) {
+            btn.textContent = "נבחר";
+            btn.disabled = true;
+          } else {
+            btn.textContent = "בחר";
+            btn.disabled = false;
+          }
+          btn.dataset.action = "select";
+        }
+
+        btn.dataset.id = skin.id;
+
+        meta.appendChild(cost);
+        meta.appendChild(status);
+        meta.appendChild(btn);
+
+        row.appendChild(main);
+        row.appendChild(meta);
+
+        skinsListEl.appendChild(row);
+      });
+    }
+
+    function buySkin(id) {
+      const skin = SKINS_DEF.find(s => s.id === id);
+      if (!skin) return;
+      if (skinsState.owned.includes(id)) return;
+      if (coins < skin.cost) {
+        alert("אין מספיק מטבעות.");
+        return;
+      }
+      coins -= skin.cost;
+      skinsState.owned.push(id);
+      saveCoins();
+      saveSkins();
+      updateHud();
+      renderShop();
+      setMessage(`רכשת את הסקין "${skin.name}"!`, "good");
+      playSound(sndLevelUp);
+    }
+
+    function selectSkin(id) {
+      if (!skinsState.owned.includes(id)) return;
+      skinsState.selected = id;
+      saveSkins();
+      applySkin(id);
+      renderShop();
+      setMessage(`הסקין הפעיל עכשיו: ${SKINS_DEF.find(s => s.id === id)?.name || id}`, "good");
     }
 
     // אירועים
@@ -1308,17 +1746,42 @@
       }, 400);
     });
 
+    openShopBtn.addEventListener("click", () => {
+      introPanelEl.style.display = "none";
+      shopPanelEl.style.display = "block";
+      renderShop();
+    });
+
+    shopBackBtn.addEventListener("click", () => {
+      shopPanelEl.style.display = "none";
+      introPanelEl.style.display = "block";
+    });
+
+    skinsListEl.addEventListener("click", (e) => {
+      const btn = e.target.closest("button.skin-btn");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === "buy") {
+        buySkin(id);
+      } else if (action === "select") {
+        selectSkin(id);
+      }
+    });
+
     // init
     initBoard();
     loadBestScores();
     loadRuns();
     loadAchievements();
     loadPlayers();
+    loadCoins();
+    loadSkins();
     renderRuns();
     renderAchievements();
     updateHud();
     shareBtn.disabled = true;
-    setMessage("בחר שם שחקן, בחר קושי, לחץ \"התחל משחק\" – ואז שתף את התוצאה לחברים.", "neutral");
+    setMessage("בחר שם שחקן, בחר קושי, לחץ \"התחל משחק\" – וצבור מטבעות וסקינים.", "neutral");
 
     // PWA – Service Worker
     if ("serviceWorker" in navigator) {
