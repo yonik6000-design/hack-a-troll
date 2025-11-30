@@ -1,4 +1,4 @@
-ח<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -261,6 +261,7 @@
       justify-content: center;
       gap: 6px;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
 
     button.main-btn {
@@ -426,6 +427,13 @@
       animation: heartPulse 1s infinite;
     }
 
+    .hole.active.boss {
+      border-color: #f97316;
+      box-shadow:
+        inset 0 10px 14px rgba(0, 0, 0, 0.9),
+        0 0 18px rgba(249, 115, 22, 0.95);
+    }
+
     .hole:active {
       transform: scale(0.96);
     }
@@ -558,6 +566,10 @@
       animation: scoreFlash 0.25s ease;
     }
 
+    .milestone-flash {
+      animation: milestoneFlash 0.5s ease;
+    }
+
     @keyframes shake {
       0% { transform: translateX(0); }
       25% { transform: translateX(-4px); }
@@ -578,7 +590,13 @@
       100% { transform: scale(1); }
     }
 
-    /* מסך כניסה + חנות סקינים */
+    @keyframes milestoneFlash {
+      0% { box-shadow: 0 0 0 rgba(250, 204, 21, 0.0); }
+      50% { box-shadow: 0 0 30px rgba(250, 204, 21, 0.8); }
+      100% { box-shadow: 0 0 0 rgba(250, 204, 21, 0.0); }
+    }
+
+    /* מסך כניסה + חנות סקינים – על כל המסך */
     .intro-overlay {
       position: fixed;
       inset: 0;
@@ -589,24 +607,29 @@
         #020617;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: stretch;
     }
 
     .intro-panel {
-      width: 90%;
-      max-width: 380px;
-      border-radius: 24px;
-      padding: 20px 16px 18px;
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      border-radius: 0;
+      padding: 28px 18px 22px;
       background: rgba(15, 23, 42, 0.98);
       border: 1px solid rgba(34, 197, 94, 0.4);
       box-shadow:
         0 24px 60px rgba(0, 0, 0, 0.95),
         0 0 28px rgba(52, 211, 153, 0.5);
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
     }
 
     .intro-title {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 900;
       letter-spacing: 0.16em;
       color: #22f7b5;
@@ -617,14 +640,14 @@
     }
 
     .intro-subtitle {
-      font-size: 12px;
+      font-size: 13px;
       color: #9ca3af;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .intro-icons {
-      font-size: 30px;
-      margin-bottom: 12px;
+      font-size: 34px;
+      margin-bottom: 10px;
       text-shadow:
         0 0 10px rgba(248, 250, 252, 0.4);
     }
@@ -633,14 +656,14 @@
       font-size: 11px;
       color: #d1d5db;
       line-height: 1.5;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .intro-btn {
       border-radius: 999px;
       border: none;
-      padding: 8px 22px;
-      font-size: 13px;
+      padding: 9px 22px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
       background: radial-gradient(circle at top, #facc15, #eab308, #a855f7);
@@ -650,7 +673,7 @@
         0 0 20px rgba(248, 250, 252, 0.7);
       text-transform: uppercase;
       transition: transform 0.08s ease, box-shadow 0.08s ease;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       width: 100%;
     }
 
@@ -664,6 +687,7 @@
     .intro-note {
       font-size: 10px;
       color: #9ca3af;
+      margin-top: 2px;
     }
 
     .intro-note b {
@@ -768,25 +792,28 @@
     <div id="introPanel" class="intro-panel">
       <div class="intro-title">HACK A TROLL</div>
       <div class="intro-subtitle">גרסת טרולים אינסופית · Inspired by NY</div>
-      <div class="intro-icons">😈 😇 💚</div>
+      <div class="intro-icons">😈 😇 💚 👹</div>
       <div class="intro-text">
-        חסום את הטרולים הרעים, היזהר מהטובים, אסוף לבבות וסקינים,  
-        וצבור שיאים לכל שחקן ורמת קושי.
+        חסום את הטרולים הרעים, היזהר מהטובים, אסוף לבבות,  
+        צבור מטבעות ופתח סקינים. אחרי 70 נקודות יופיע לפעמים <b>בוס 👹</b> ששווה 4 נקודות.
       </div>
-      <button id="introStartBtn" class="intro-btn">היכנס למשחק</button>
+      <button id="introEndlessBtn" class="intro-btn">התחל – מצב אינסופי</button>
+      <button id="introTrainingBtn" class="secondary-btn" style="width:100%;">מצב אימון (Tutorial)</button>
+      <button id="introTimeBtn" class="secondary-btn" style="width:100%;">Time Attack – 60 שניות</button>
+      <button id="introRoomBtn" class="secondary-btn" style="width:100%;">מצב חדר – 2 שחקנים</button>
       <button id="openShopBtn" class="secondary-btn" style="width:100%;margin-top:6px;">
         חנות סקינים 🪙
       </button>
       <div class="intro-note">
         מטבע זהב אחד על כל ריצה מעל <b>60 (קשה)</b>, <b>70 (בינוני)</b>, <b>100 (קל)</b>.  
-        כל סקין עולה <b>15 מטבעות</b>.
+        כל סקין עולה <b>15 מטבעות</b>. במצב אימון לא צוברים מטבעות.
       </div>
     </div>
 
     <div id="shopPanel" class="intro-panel" style="display:none;">
       <div class="shop-title">חנות סקינים</div>
       <div class="intro-text">
-        שחק, שבור שיאים לפי רמת קושי, אסוף מטבעות זהב ופתח סקינים.
+        שחק, שבור שיאים לפי רמת קושי, אסוף מטבעות זהב ופתח סקינים שמשנים את האווירה.
       </div>
       <div class="shop-coins">מטבעות נוכחיים: <span id="shopCoins">0</span> 🪙</div>
       <div id="skinsList" class="skins-list"></div>
@@ -799,7 +826,7 @@
   <div class="game">
     <div class="title">HACK A TROLL</div>
     <div class="subtitle">
-      מצב אינסופי · שמות שחקנים · שיאים לפי שחקן וקושי · מטבעות וסקינים · שיתוף תוצאה
+      אינסופי · אימון · Time Attack · חדר 2 שחקנים · מטבעות, סקינים, בוס 👹 ושיתוף תוצאה
     </div>
 
     <div class="player-row">
@@ -836,7 +863,7 @@
         <span id="level" class="hud-value level">1</span>
       </div>
       <div class="hud-item">
-        <span class="hud-label">שיא:</span>
+        <span class="hud-label">שיא אינסופי:</span>
         <span id="best" class="hud-value best">0</span>
       </div>
       <div class="hud-item">
@@ -847,10 +874,15 @@
         <span class="hud-label">מטבעות:</span>
         <span id="coins" class="hud-value coins">0</span>
       </div>
+      <div class="hud-item" id="timeHud" style="display:none;">
+        <span class="hud-label">זמן:</span>
+        <span id="timeLeft" class="hud-value level">60s</span>
+      </div>
     </div>
 
     <div class="controls">
       <button id="startBtn" class="main-btn">התחל משחק</button>
+      <button id="pauseBtn" class="secondary-btn" disabled>הפסקה</button>
       <button id="shareBtn" class="secondary-btn" disabled>שתף תוצאה</button>
     </div>
 
@@ -858,11 +890,14 @@
 
     <div class="message" id="message"></div>
     <div class="hint">
-      כל שיא וריצות נשמרים לפי <b>שחקן + רמת קושי</b>.  
+      מצב אינסופי: חיים נגמרים → Game Over.  
+      Time Attack: 60 שניות להביא כמה שיותר נקודות.  
+      מצב חדר: שני שחקנים, כל אחד ריצה – מקבלים הודעת ניצחון.  
       😈 – לחץ לקבל נקודה (קומבו עולה). אם תפספס → מאבד חיים והקומבו מתאפס.  
       😇 – אם תלחץ → מאבד חיים ומאפס קומבו.  
       💚 – אם תלחץ → מקבל חיים (עד תקרה מוגבלת).  
-      🪙 – מטבע זהב על ריצה חזקה (60/70/100 לפי קושי), 15 מטבעות לסקין.
+      👹 – בוס שמופיע רק אחרי 70 נקודות ולעיתים רחוקות; אם תפגע בו → +4 נקודות.  
+      🪙 – מטבע זהב על ריצה חזקה (60/70/100 לפי קושי) במצב אינסופי בלבד, 15 מטבעות לסקין.
     </div>
 
     <div class="runs-title">ריצות אחרונות (שחקן ורמת קושי נוכחיים):</div>
@@ -885,6 +920,7 @@
     const EXTRA_LIFE_CAP = MAX_LIVES + 2;
 
     const HS_KEY      = "hack_a_troll_best_scores_v2";
+    const HS_TA_KEY   = "hack_a_troll_best_scores_time_v1";
     const RUNS_KEY    = "hack_a_troll_runs_v2";
     const ACH_KEY     = "hack_a_troll_achievements_v1";
     const PLAYERS_KEY = "hack_a_troll_players_v1";
@@ -899,12 +935,19 @@
       hard:   { baseSpawn: 380, baseLifetime: 820,  badProb: 0.50, heartProb: 0.06 }
     };
 
-    // ספי מטבעות: כל ריצה מעל ערך זה לקושי → מטבע זהב אחד
+    // ספי מטבעות לריצה (רק במצב אינסופי)
     const COIN_THRESHOLDS = {
       easy: 100,
       medium: 70,
       hard: 60
     };
+
+    // בוס: מופיע רק אחרי 70 נק' ובסיכוי 20% בספאון, ורק אם אין כבר בוס חי
+    const BOSS_MIN_SCORE = 70;
+    const BOSS_PROBABILITY = 0.2;
+
+    // אימון
+    const TRAINING_MAX_SPAWNS = 15;
 
     const SKINS_DEF = [
       {
@@ -953,8 +996,11 @@
     const bestEl         = document.getElementById("best");
     const comboEl        = document.getElementById("combo");
     const coinsEl        = document.getElementById("coins");
+    const timeHudEl      = document.getElementById("timeHud");
+    const timeLeftEl     = document.getElementById("timeLeft");
     const messageEl      = document.getElementById("message");
     const startBtn       = document.getElementById("startBtn");
+    const pauseBtn       = document.getElementById("pauseBtn");
     const shareBtn       = document.getElementById("shareBtn");
     const diffSelect     = document.getElementById("difficultySelect");
     const resetBtn       = document.getElementById("resetBtn");
@@ -966,11 +1012,14 @@
     const introOverlayEl = document.getElementById("introOverlay");
     const introPanelEl   = document.getElementById("introPanel");
     const shopPanelEl    = document.getElementById("shopPanel");
-    const introStartBtn  = document.getElementById("introStartBtn");
-    const openShopBtn    = document.getElementById("openShopBtn");
-    const shopCoinsEl    = document.getElementById("shopCoins");
-    const skinsListEl    = document.getElementById("skinsList");
-    const shopBackBtn    = document.getElementById("shopBackBtn");
+    const introEndlessBtn  = document.getElementById("introEndlessBtn");
+    const introTrainingBtn = document.getElementById("introTrainingBtn");
+    const introTimeBtn     = document.getElementById("introTimeBtn");
+    const introRoomBtn     = document.getElementById("introRoomBtn");
+    const openShopBtn      = document.getElementById("openShopBtn");
+    const shopCoinsEl      = document.getElementById("shopCoins");
+    const skinsListEl      = document.getElementById("skinsList");
+    const shopBackBtn      = document.getElementById("shopBackBtn");
 
     const sndHitBad   = document.getElementById("soundHitBad");
     const sndHitGood  = document.getElementById("soundHitGood");
@@ -981,14 +1030,18 @@
     const holes = [];
     const activeTrolls = {};
 
+    // מצב משחק
+    let gameMode = "endless"; // endless | timeAttack | training
     let score = 0;
     let lives = MAX_LIVES;
     let level = 1;
     let combo = 0;
     let maxCombo = 0;
     let bestScores = { easy: 0, medium: 0, hard: 0 };
+    let bestTimeScores = { easy: 0, medium: 0, hard: 0 };
     let gameRunning = false;
     let spawnIntervalId = null;
+    let timeAttackTimerId = null;
     let currentConfig = DIFFICULTY_CONFIG.medium;
     let currentDifficulty = "medium";
     let runs = [];
@@ -1002,6 +1055,17 @@
       owned: ["default"],
       selected: "default"
     };
+    let trainingSpawns = 0;
+    let isPaused = false;
+    let lastMilestone = 0;
+
+    // מצב חדר (2 שחקנים)
+    let roomModeActive = false;
+    let roomPlayers = [];
+    let roomScores = [];
+    let roomCurrentIndex = 0;
+
+    let timeLeft = 0; // עבור Time Attack
 
     const GAME_URL = window.location.href.split("#")[0];
 
@@ -1021,6 +1085,11 @@
     function flashScore() {
       scoreEl.classList.add("score-flash");
       setTimeout(() => scoreEl.classList.remove("score-flash"), 250);
+    }
+
+    function flashMilestone() {
+      boardEl.classList.add("milestone-flash");
+      setTimeout(() => boardEl.classList.remove("milestone-flash"), 500);
     }
 
     function initBoard() {
@@ -1052,6 +1121,18 @@
         }
       } catch (_) {}
       bestEl.textContent = (bestScores[currentDifficulty] || 0).toString();
+    }
+
+    function loadBestTimeScores() {
+      try {
+        const stored = localStorage.getItem(HS_TA_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === "object") {
+            bestTimeScores = { ...bestTimeScores, ...parsed };
+          }
+        }
+      } catch (_) {}
     }
 
     function loadRuns() {
@@ -1146,6 +1227,12 @@
       } catch (_) {}
     }
 
+    function saveBestTimeScores() {
+      try {
+        localStorage.setItem(HS_TA_KEY, JSON.stringify(bestTimeScores));
+      } catch (_) {}
+    }
+
     function renderPlayersSelect() {
       playerSelectEl.innerHTML = "<option value=\"\">שחקן קיים…</option>";
       players.forEach(name => {
@@ -1176,7 +1263,12 @@
 
         const left = document.createElement("div");
         left.className = "run-meta";
-        left.textContent = `#${filtered.length - idx} · ${labelDifficulty(run.difficulty)} · ${run.player} · שלב ${run.level}`;
+        const modeLabel =
+          run.mode === "timeAttack" ? "Time Attack" :
+          run.mode === "training" ? "אימון" :
+          "אינסופי";
+
+        left.textContent = `#${filtered.length - idx} · ${labelDifficulty(run.difficulty)} · ${run.player} · ${modeLabel}`;
 
         const middle = document.createElement("div");
         middle.className = "run-score";
@@ -1226,6 +1318,7 @@
     }
 
     function updateBestScoreIfNeeded() {
+      if (gameMode !== "endless") return;
       const currentBest = bestScores[currentDifficulty] || 0;
       if (score > currentBest) {
         bestScores[currentDifficulty] = score;
@@ -1233,6 +1326,15 @@
         try {
           localStorage.setItem(HS_KEY, JSON.stringify(bestScores));
         } catch (_) {}
+      }
+    }
+
+    function updateBestTimeScoreIfNeeded() {
+      if (gameMode !== "timeAttack") return;
+      const currentBest = bestTimeScores[currentDifficulty] || 0;
+      if (score > currentBest) {
+        bestTimeScores[currentDifficulty] = score;
+        saveBestTimeScores();
       }
     }
 
@@ -1251,7 +1353,8 @@
         level,
         difficulty: currentDifficulty,
         time: timeStr,
-        player: currentPlayer || "ללא שם"
+        player: currentPlayer || "ללא שם",
+        mode: gameMode
       };
 
       lastRun = run;
@@ -1265,6 +1368,7 @@
     }
 
     function awardCoinsForRun() {
+      if (gameMode !== "endless") return 0;
       const thr = COIN_THRESHOLDS[currentDifficulty];
       if (!thr) return 0;
       if (score >= thr) {
@@ -1282,6 +1386,12 @@
       bestEl.textContent = (bestScores[currentDifficulty] || 0).toString();
       comboEl.textContent = combo.toString();
       coinsEl.textContent = coins.toString();
+      if (gameMode === "timeAttack") {
+        timeHudEl.style.display = "flex";
+        timeLeftEl.textContent = timeLeft + "s";
+      } else {
+        timeHudEl.style.display = "none";
+      }
     }
 
     function setMessage(text, type = "neutral") {
@@ -1299,7 +1409,7 @@
         const info = activeTrolls[idx];
         clearTimeout(info.timeoutId);
         const hole = holes[idx];
-        hole.classList.remove("active", "good", "bad", "heart");
+        hole.classList.remove("active", "good", "bad", "heart", "boss");
         hole.textContent = "";
         delete activeTrolls[idx];
       }
@@ -1333,24 +1443,68 @@
 
     function endGame() {
       gameRunning = false;
+      isPaused = false;
       clearInterval(spawnIntervalId);
       spawnIntervalId = null;
+      clearInterval(timeAttackTimerId);
+      timeAttackTimerId = null;
       clearAllTrolls();
+
       updateBestScoreIfNeeded();
+      updateBestTimeScoreIfNeeded();
       checkAchievementsOnRunEnd();
       const earnedCoins = awardCoinsForRun();
       recordRun();
       startBtn.disabled = false;
       diffSelect.disabled = false;
+      pauseBtn.disabled = true;
+      pauseBtn.textContent = "הפסקה";
       shareBtn.disabled = !lastRun;
       updateHud();
 
-      let msg =
-        `Game Over – שחקן ${currentPlayer || "ללא שם"} | ניקוד: ${score} | שיא (${labelDifficulty(currentDifficulty)}): ${bestScores[currentDifficulty] || 0}`;
-      if (earnedCoins > 0) {
-        msg += ` | קיבלת ${earnedCoins} מטבע זהב 🪙`;
+      let baseMsg =
+        `Game Over – שחקן ${currentPlayer || "ללא שם"} | מצב: ${
+          gameMode === "timeAttack" ? "Time Attack" :
+          gameMode === "training" ? "אימון" : "אינסופי"
+        } | ניקוד: ${score} | שיא אינסופי (${labelDifficulty(currentDifficulty)}): ${bestScores[currentDifficulty] || 0}`;
+
+      if (gameMode === "timeAttack") {
+        const bestTa = bestTimeScores[currentDifficulty] || 0;
+        baseMsg += ` | שיא Time Attack בקושי זה: ${bestTa}`;
       }
-      setMessage(msg, "bad");
+
+      if (earnedCoins > 0) {
+        baseMsg += ` | קיבלת ${earnedCoins} מטבע זהב 🪙`;
+      }
+
+      // מצב חדר – ניהול תוצאות
+      if (roomModeActive && roomPlayers.length === 2) {
+        roomScores[roomCurrentIndex] = score;
+        if (roomCurrentIndex === 0) {
+          // מעבר לשחקן השני
+          roomCurrentIndex = 1;
+          const nextName = roomPlayers[1];
+          playerNameEl.value = nextName;
+          currentPlayer = nextName;
+          ensurePlayerInList(nextName);
+          setMessage(
+            `${baseMsg} | מצב חדר: עכשיו תורו של ${nextName} – לחץ "התחל משחק".`,
+            "neutral"
+          );
+          return;
+        } else {
+          // שני השחקנים סיימו
+          roomModeActive = false;
+          const [s1, s2] = roomScores;
+          let roomMsg = `מצב חדר – ${roomPlayers[0]}: ${s1} נק', ${roomPlayers[1]}: ${s2} נק'. `;
+          if (s1 > s2) roomMsg += `${roomPlayers[0]} ניצח בסיבוב הזה!`;
+          else if (s2 > s1) roomMsg += `${roomPlayers[1]} ניצח בסיבוב הזה!`;
+          else roomMsg += "שוויון!";
+          baseMsg += " | " + roomMsg;
+        }
+      }
+
+      setMessage(baseMsg, "bad");
       playSound(sndGameOver);
     }
 
@@ -1370,8 +1524,38 @@
       return Math.max(300, Math.round(currentConfig.baseLifetime * factor));
     }
 
+    function handleMilestones() {
+      if (score >= 100 && lastMilestone < 100) {
+        lastMilestone = 100;
+        setMessage("Legendary Run – חצית 100 נקודות! 🔥", "good");
+        flashMilestone();
+        playSound(sndLevelUp);
+      } else if (score >= 50 && lastMilestone < 50) {
+        lastMilestone = 50;
+        setMessage("HOT STREAK – עברת 50 נקודות! 🔥", "good");
+        flashMilestone();
+        playSound(sndLevelUp);
+      }
+    }
+
     function spawnTroll() {
-      if (!gameRunning) return;
+      if (!gameRunning || isPaused) return;
+
+      // אימון – ספירה ומסרים
+      if (gameMode === "training") {
+        trainingSpawns++;
+        if (trainingSpawns === 1) {
+          setMessage("מצב אימון: נסה ללחוץ רק על הטרולים הרעים 😈.", "neutral");
+        } else if (trainingSpawns === 5) {
+          setMessage("שימו לב: 😇 הם טובים – אל תלחץ עליהם.", "neutral");
+        } else if (trainingSpawns === 9) {
+          setMessage("לב 💚 נותן חיים, ובוס 👹 נותן 4 נקודות.", "neutral");
+        } else if (trainingSpawns > TRAINING_MAX_SPAWNS) {
+          setMessage("סיימת את מצב האימון! עכשיו תנסה מצב אינסופי.", "good");
+          endGame();
+          return;
+        }
+      }
 
       const currentActive = Object.keys(activeTrolls).length;
       if (currentActive >= 3) return;
@@ -1392,6 +1576,13 @@
         type = Math.random() < currentConfig.badProb ? "bad" : "good";
       }
 
+      const anyBossActive = Object.values(activeTrolls).some(t => t.type === "boss");
+      if (!anyBossActive && score >= BOSS_MIN_SCORE && Math.random() < BOSS_PROBABILITY) {
+        type = "boss";
+        setMessage("BOSS INCOMING 👹 – פגע בו בשביל +4 נקודות!", "good");
+        flashMilestone();
+      }
+
       const hole = holes[holeIndex];
 
       activeTrolls[holeIndex] = {
@@ -1403,29 +1594,38 @@
       hole.classList.add("active");
       hole.classList.add(type);
       hole.textContent =
-        type === "bad" ? "😈" :
-        type === "good" ? "😇" :
-        "💚";
+        type === "bad"   ? "😈" :
+        type === "good"  ? "😇" :
+        type === "heart" ? "💚" :
+        "👹";
 
-      const lifetime = getLevelAdjustedLifetime();
+      let lifetime = getLevelAdjustedLifetime();
+      if (type === "boss") {
+        lifetime = Math.round(lifetime * 1.3); // לבוס קצת יותר זמן על המסך
+      }
 
       const timeoutId = setTimeout(() => {
         const troll = activeTrolls[holeIndex];
         if (!troll) return;
 
         if (!troll.hit) {
-          if (troll.type === "bad") {
+          if (troll.type === "bad" || troll.type === "boss") {
             lives -= 1;
             combo = 0;
             updateHud();
-            setMessage("פספסת טרול רע – איבדת חיים והקומבו התאפס.", "bad");
+            setMessage(
+              troll.type === "boss"
+                ? "החמצת את הבוס 👹 – איבדת חיים והקומבו התאפס."
+                : "פספסת טרול רע – איבדת חיים והקומבו התאפס.",
+              "bad"
+            );
             playSound(sndMiss);
             pulseBoardDamage();
             checkGameOver();
           }
         }
 
-        hole.classList.remove("active", "good", "bad", "heart");
+        hole.classList.remove("active", "good", "bad", "heart", "boss");
         hole.textContent = "";
         delete activeTrolls[holeIndex];
       }, lifetime);
@@ -1434,7 +1634,7 @@
     }
 
     function onHoleClick(event) {
-      if (!gameRunning) return;
+      if (!gameRunning || isPaused) return;
       const hole = event.currentTarget;
       const index = Number(hole.dataset.index);
       const troll = activeTrolls[index];
@@ -1454,6 +1654,7 @@
         playSound(sndHitBad);
         handleLevelProgress();
         checkAchievementsOnProgress();
+        handleMilestones();
       } else if (troll.type === "good") {
         lives -= 1;
         combo = 0;
@@ -1469,10 +1670,20 @@
           setMessage("לב 💚 נוסף – אבל כבר הגעת למקסימום.", "good");
         }
         playSound(sndLevelUp);
+      } else if (troll.type === "boss") {
+        score += 4;
+        combo += 1;
+        if (combo > maxCombo) maxCombo = combo;
+        flashScore();
+        setMessage(`פגעת בבוס 👹 – +4 נקודות! (קומבו ${combo})`, "good");
+        playSound(sndHitBad);
+        handleLevelProgress();
+        checkAchievementsOnProgress();
+        handleMilestones();
       }
 
       updateHud();
-      hole.classList.remove("active", "good", "bad", "heart");
+      hole.classList.remove("active", "good", "bad", "heart", "boss");
       hole.textContent = "";
       delete activeTrolls[index];
 
@@ -1481,7 +1692,7 @@
 
     function handleLevelProgress() {
       const newLevel = Math.floor(score / 8) + 1;
-      if (newLevel > level) {
+      if (newLevel > level && gameMode !== "timeAttack") {
         level = newLevel;
         updateHud();
         setMessage(`עלית לשלב ${level}!`, "good");
@@ -1496,58 +1707,105 @@
     }
 
     function normalizePlayerName(raw) {
-      return raw.trim();
+      return (raw || "").trim();
     }
 
-    function ensureCurrentPlayer() {
-      const nameRaw = playerNameEl.value || "";
-      const normalized = normalizePlayerName(nameRaw);
-      if (!normalized) {
-        setMessage("קודם תכתוב שם שחקן למעלה (למשל: יוני).", "bad");
-        return false;
-      }
-      currentPlayer = normalized;
-      if (!players.includes(currentPlayer)) {
-        players.push(currentPlayer);
+    function ensurePlayerInList(name) {
+      if (!name) return;
+      if (!players.includes(name)) {
+        players.push(name);
         savePlayers();
         renderPlayersSelect();
       }
+    }
+
+    function ensureCurrentPlayer(showMessageIfMissing = true) {
+      const nameRaw = playerNameEl.value || "";
+      const normalized = normalizePlayerName(nameRaw);
+      if (!normalized) {
+        if (showMessageIfMissing) {
+          setMessage("קודם תכתוב שם שחקן למעלה (למשל: יוני).", "bad");
+        }
+        return false;
+      }
+      currentPlayer = normalized;
+      ensurePlayerInList(currentPlayer);
       return true;
     }
 
-    function startGame() {
-      if (gameRunning) return;
-      if (!ensureCurrentPlayer()) return;
-
-      const diff = diffSelect.value;
-      currentDifficulty = diff;
-      currentConfig = DIFFICULTY_CONFIG[diff] || DIFFICULTY_CONFIG.medium;
-
+    function resetGameStateForNewRun() {
       score = 0;
       lives = MAX_LIVES;
       level = 1;
       combo = 0;
       maxCombo = 0;
       usedHeartThisRun = false;
+      trainingSpawns = 0;
+      lastMilestone = 0;
       lastRun = null;
       shareBtn.disabled = true;
-      updateHud();
       clearAllTrolls();
-      setMessage(`Go! שחקן ${currentPlayer}, מצב אינסופי – נסה לשבור את השיא שלך בקושי הזה.`, "good");
+      updateHud();
+    }
+
+    function startGame(chosenMode) {
+      if (gameRunning) return;
+
+      gameMode = chosenMode || "endless";
+
+      // במצב חדר – השחקן מוגדר מראש
+      if (!roomModeActive) {
+        if (!ensureCurrentPlayer(true)) return;
+      }
+
+      const diff = diffSelect.value;
+      currentDifficulty = diff;
+      currentConfig = DIFFICULTY_CONFIG[diff] || DIFFICULTY_CONFIG.medium;
+
+      resetGameStateForNewRun();
+
+      setMessage(
+        `Go! שחקן ${currentPlayer}, מצב: ${
+          gameMode === "timeAttack" ? "Time Attack" :
+          gameMode === "training" ? "אימון" : "אינסופי"
+        } בקושי ${labelDifficulty(currentDifficulty)}.`,
+        "good"
+      );
 
       gameRunning = true;
+      isPaused = false;
       startBtn.disabled = true;
       diffSelect.disabled = true;
+      pauseBtn.disabled = false;
+      pauseBtn.textContent = "הפסקה";
 
+      // אינסופי / אימון – ספאון לפי קושי
       const spawnMs = getLevelAdjustedSpawn();
       spawnIntervalId = setInterval(spawnTroll, spawnMs);
       spawnTroll();
+
+      // Time Attack – טיימר
+      if (gameMode === "timeAttack") {
+        timeLeft = 60;
+        updateHud();
+        timeAttackTimerId = setInterval(() => {
+          if (!gameRunning || isPaused) return;
+          timeLeft--;
+          if (timeLeft < 0) timeLeft = 0;
+          updateHud();
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
       renderRuns();
     }
 
     function resetAllData() {
       if (!confirm("לאפס שיאים, ריצות, הישגים, שמות שחקנים, מטבעות וסקינים? הפעולה לא ניתנת לשחזור.")) return;
       bestScores = { easy: 0, medium: 0, hard: 0 };
+      bestTimeScores = { easy: 0, medium: 0, hard: 0 };
       runs = [];
       achievements = {};
       players = [];
@@ -1558,6 +1816,7 @@
       ACHIEVEMENTS_DEF.forEach(a => achievements[a.id] = false);
       try {
         localStorage.removeItem(HS_KEY);
+        localStorage.removeItem(HS_TA_KEY);
         localStorage.removeItem(RUNS_KEY);
         localStorage.removeItem(ACH_KEY);
         localStorage.removeItem(PLAYERS_KEY);
@@ -1576,6 +1835,8 @@
       renderRuns();
       renderAchievements();
       shareBtn.disabled = true;
+      pauseBtn.disabled = true;
+      pauseBtn.textContent = "הפסקה";
       setMessage("הכול אופס – אפשר להתחיל ליגת שחקנים וסקינים מאפס.", "neutral");
     }
 
@@ -1587,8 +1848,12 @@
       const text =
         `שיחקתי ב-Hack A Troll!\n` +
         `שחקן: ${lastRun.player}\n` +
+        `מצב: ${
+          lastRun.mode === "timeAttack" ? "Time Attack" :
+          lastRun.mode === "training" ? "אימון" : "אינסופי"
+        }\n` +
         `קושי: ${labelDifficulty(lastRun.difficulty)}\n` +
-        `ניקוד: ${lastRun.score}, שלב: ${lastRun.level}\n` +
+        `ניקוד: ${lastRun.score}\n` +
         `מטבעות: ${coins}\n` +
         `בוא תנסה לשבור אותי: ${GAME_URL}`;
 
@@ -1716,8 +1981,93 @@
       setMessage(`הסקין הפעיל עכשיו: ${SKINS_DEF.find(s => s.id === id)?.name || id}`, "good");
     }
 
+    function pauseGame() {
+      if (!gameRunning || isPaused) return;
+      isPaused = true;
+      gameRunning = false;
+      clearInterval(spawnIntervalId);
+      spawnIntervalId = null;
+      clearInterval(timeAttackTimerId);
+      timeAttackTimerId = null;
+      clearAllTrolls(); // כדי שלא יאבד חיים בזמן Pause
+      pauseBtn.textContent = "המשך";
+      setMessage("המשחק בהפסקה – לחץ \"המשך\" כדי להמשיך (הלוח אופס).", "neutral");
+    }
+
+    function resumeGame() {
+      if (!isPaused) return;
+      if (lives <= 0) {
+        setMessage("אי אפשר להמשיך – המשחק כבר נגמר.", "bad");
+        pauseBtn.disabled = true;
+        pauseBtn.textContent = "הפסקה";
+        return;
+      }
+      isPaused = false;
+      gameRunning = true;
+
+      const spawnMs = getLevelAdjustedSpawn();
+      spawnIntervalId = setInterval(spawnTroll, spawnMs);
+      spawnTroll();
+
+      if (gameMode === "timeAttack" && timeLeft > 0) {
+        timeAttackTimerId = setInterval(() => {
+          if (!gameRunning || isPaused) return;
+          timeLeft--;
+          if (timeLeft < 0) timeLeft = 0;
+          updateHud();
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      pauseBtn.textContent = "הפסקה";
+      setMessage("המשחק נמשך.", "good");
+    }
+
+    function startRoomMode() {
+      const p1 = normalizePlayerName(prompt("שם שחקן 1 במצב חדר:"));
+      const p2 = normalizePlayerName(prompt("שם שחקן 2 במצב חדר:"));
+      if (!p1 || !p2) {
+        alert("צריך להזין שני שמות שחקנים.");
+        return;
+      }
+      roomModeActive = true;
+      roomPlayers = [p1, p2];
+      roomScores = [0, 0];
+      roomCurrentIndex = 0;
+
+      playerNameEl.value = p1;
+      currentPlayer = p1;
+      ensurePlayerInList(p1);
+
+      hideIntroOverlay();
+
+      setMessage(`מצב חדר: קודם תורו של ${p1}. אחרי שיסיים – ${p2}.`, "neutral");
+      gameMode = "endless";
+      startGame("endless");
+    }
+
+    function hideIntroOverlay() {
+      introOverlayEl.style.opacity = "0";
+      introOverlayEl.style.transition = "opacity 0.4s ease";
+      setTimeout(() => {
+        introOverlayEl.style.display = "none";
+      }, 400);
+    }
+
     // אירועים
-    startBtn.addEventListener("click", startGame);
+    startBtn.addEventListener("click", () => {
+      // אם הגעת לכאן לא דרך מסך הכניסה – נשתמש במצב האחרון (ברירת מחדל אינסופי)
+      if (!gameMode) gameMode = "endless";
+      if (roomModeActive && roomCurrentIndex === 1) {
+        // ריצה שנייה בחדר
+        startGame("endless");
+      } else {
+        startGame(gameMode || "endless");
+      }
+    });
+
     diffSelect.addEventListener("change", () => {
       if (gameRunning) return;
       currentDifficulty = diffSelect.value;
@@ -1726,8 +2076,15 @@
       renderRuns();
       setMessage(`מציג שיא וריצות לשחקן "${currentPlayer || "?"}" בקושי: ${labelDifficulty(currentDifficulty)}.`, "neutral");
     });
+
     resetBtn.addEventListener("click", resetAllData);
     shareBtn.addEventListener("click", shareLastRun);
+
+    pauseBtn.addEventListener("click", () => {
+      if (!gameRunning && !isPaused) return;
+      if (!isPaused) pauseGame();
+      else resumeGame();
+    });
 
     playerSelectEl.addEventListener("change", () => {
       const selected = playerSelectEl.value;
@@ -1738,23 +2095,38 @@
       setMessage(`שחקן נוכחי: ${currentPlayer}.`, "neutral");
     });
 
-    introStartBtn.addEventListener("click", () => {
-      introOverlayEl.style.opacity = "0";
-      introOverlayEl.style.transition = "opacity 0.4s ease";
-      setTimeout(() => {
-        introOverlayEl.style.display = "none";
-      }, 400);
+    // כפתורי מסך כניסה
+    introEndlessBtn.addEventListener("click", () => {
+      gameMode = "endless";
+      hideIntroOverlay();
+      setMessage("מצב אינסופי – בחר שם שחקן ולחץ \"התחל משחק\".", "neutral");
+    });
+
+    introTrainingBtn.addEventListener("click", () => {
+      gameMode = "training";
+      hideIntroOverlay();
+      setMessage("מצב אימון – בחר שם שחקן ולחץ \"התחל משחק\".", "neutral");
+    });
+
+    introTimeBtn.addEventListener("click", () => {
+      gameMode = "timeAttack";
+      hideIntroOverlay();
+      setMessage("מצב Time Attack – 60 שניות להביא כמה שיותר נקודות.", "neutral");
+    });
+
+    introRoomBtn.addEventListener("click", () => {
+      startRoomMode();
     });
 
     openShopBtn.addEventListener("click", () => {
       introPanelEl.style.display = "none";
-      shopPanelEl.style.display = "block";
+      shopPanelEl.style.display = "flex";
       renderShop();
     });
 
     shopBackBtn.addEventListener("click", () => {
       shopPanelEl.style.display = "none";
-      introPanelEl.style.display = "block";
+      introPanelEl.style.display = "flex";
     });
 
     skinsListEl.addEventListener("click", (e) => {
@@ -1772,6 +2144,7 @@
     // init
     initBoard();
     loadBestScores();
+    loadBestTimeScores();
     loadRuns();
     loadAchievements();
     loadPlayers();
@@ -1781,7 +2154,8 @@
     renderAchievements();
     updateHud();
     shareBtn.disabled = true;
-    setMessage("בחר שם שחקן, בחר קושי, לחץ \"התחל משחק\" – וצבור מטבעות וסקינים.", "neutral");
+    pauseBtn.disabled = true;
+    setMessage("בחר שם שחקן, בחר קושי, בחר מצב במסך הכניסה – וצבור מטבעות, סקינים ושיאים.", "neutral");
 
     // PWA – Service Worker
     if ("serviceWorker" in navigator) {
